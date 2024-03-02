@@ -13,10 +13,19 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name= "name")
     private String name;
+
+    @Column(name= "actual_price")
     private BigDecimal actual_price;
+
+    @Column(name= "lower_price")
     private BigDecimal low_price = new BigDecimal(0);
+
+    @Column(name= "higher_price")
     private BigDecimal high_price = new BigDecimal(0);
+
+    @Column(name= "url_img")
     private String urlImg;
 
     public Game() {
