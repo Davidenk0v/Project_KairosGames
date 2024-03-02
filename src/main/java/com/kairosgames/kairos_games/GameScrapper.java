@@ -1,4 +1,4 @@
-package com.kairosgames.kairos_games.model;
+package com.kairosgames.kairos_games;
 
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
@@ -6,6 +6,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.stereotype.Component;
 
+import com.kairosgames.kairos_games.model.Game;
 
 import java.io.IOException;
 import java.util.ArrayList;
