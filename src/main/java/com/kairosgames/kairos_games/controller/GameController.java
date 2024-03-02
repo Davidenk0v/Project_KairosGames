@@ -8,7 +8,6 @@ import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -25,9 +24,10 @@ public class GameController {
     /*
     GET http://localhost:8080/api/games
      */
+
     @RequestMapping("/games")
-    public ResponseEntity<List<Game>> findAll(){
-        List<Game> games = scrapper.getAll();
+    public ResponseEntity<List<Game>> findUrl(){
+        List<Game> games = scrapper.getInstaGames();
         if(games.isEmpty())
             return ResponseEntity.notFound().build();
 
