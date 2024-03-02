@@ -58,9 +58,33 @@ public class GameScrapper
             return gamesList;
         }
 
+        public List<Game> getEnebaGames(){
+
+            List<Game> gamesList = new ArrayList<>();
+            try{
+                for(int i = 1; i <= 50; i ++)
+                {
+                    String url = "https://www.eneba.com/es/store/games?page="+i;
+                    Document document = Jsoup.connect(url).get();
+                    Elements games = document.select(".uy1qit");
+                    for (Element game : games){
+                        String title = game.select(".YLosEl").text();
+                        String price = game.select(".L5ErLT").text();
+
+                        gamesList.add(new Game(null, title, price));
+                    }
+                }
+
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+            return gamesList;
+        }
+
         public List<Game> getAll(){
             List<Game> allGames = new ArrayList<>(getInstaGamingGames());
             allGames.addAll(getG2AGames());
+            allGames.addAll(getEnebaGames());
             return allGames;
         }
 }
