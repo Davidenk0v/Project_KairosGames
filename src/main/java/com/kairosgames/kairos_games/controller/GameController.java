@@ -26,17 +26,17 @@ public class GameController {
         this.service = service;
     }
 
-    // Buscar otra forma de cargar los datos
+    // Esto aquí en provisional
     @RequestMapping("/")
     public void loadingDatabase() {
        List<Game> gameList = this.service.loadDatabase();
        for (Game game : gameList) {
-        List<Game>sameName = service.findByname(game.getName());
+        List<Game>sameName = service.findByname(game.getName()); //Guarda en esta lista los juegos que se encuentren en la base de datos
         if(sameName.isEmpty()){
-            this.service.save(game);
+            this.service.save(game);    //Si no encuentra ninguno juego con ese nombre lo añade a la base de datos
         }else{
             for (Game game2 : sameName) {
-                game2.setActualPrice(game.getActualPrice());
+                game2.setActualPrice(game.getActualPrice()); //Si encuentra alguno le actualiza el precio
                 this.service.save(game2);
             }
         }

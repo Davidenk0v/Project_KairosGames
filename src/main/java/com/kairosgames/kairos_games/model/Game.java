@@ -73,6 +73,7 @@ public class Game {
         return actualPrice;
     }
 
+    //Al settear el precio compara si es el mayor o menor precio que ha tenido el juego
     public void setActualPrice(BigDecimal actualPrice) {
         setLowPrice(actualPrice);
         setHighPrice(actualPrice);
