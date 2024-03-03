@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -8,26 +9,48 @@ import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/api")
 public class GameController {
 
     private GameService service;
-    private GameScrapper scrapper;
 
-    public GameController(GameService service, GameScrapper scrapper) {
-        this.scrapper = scrapper;
+    public GameController(GameService service) {
         this.service = service;
     }
 
+    // Buscar otra forma de cargar los datos
+    @RequestMapping("/")
+    public void loadingDatabase() {
+       List<Game> gameList = this.service.loadDatabase();
+       for (Game game : gameList) {
+        List<Game>sameName = service.findByname(game.getName());
+        if(sameName.isEmpty()){
+            this.service.save(game);
+        }else{
+            for (Game game2 : sameName) {
+                game2.setActualPrice(game.getActualPrice());
+                this.service.save(game2);
+            }
+        }
+       }
+    }
+    
     /*
     GET http://localhost:8080/api/games
      */
 
     @RequestMapping("/games")
-    public ResponseEntity<List<Game>> findUrl(){
-        List<Game> games = scrapper.getInstaGames();
+    public ResponseEntity<List<Game>> getAllGames(){
+
+        List<Game> games = service.findAll();
         if(games.isEmpty())
             return ResponseEntity.notFound().build();
 
@@ -56,12 +79,6 @@ public class GameController {
         if(game.getId() != null)
             return ResponseEntity.badRequest().build();
 
-        this.service.save(game);
-        return ResponseEntity.ok(game);
-    }
-
-    @PutMapping("/games")
-    public ResponseEntity<Game> update (@RequestBody Game game){
         this.service.save(game);
         return ResponseEntity.ok(game);
     }

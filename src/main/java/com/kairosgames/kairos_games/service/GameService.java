@@ -16,10 +16,14 @@ public interface GameService {
 
     Optional<Game> findById(Long id);
 
+    //UPDATE
+    Game update(Long id, Game game);
+
     //CREATE
     Game save(Game game);
 
     //DELETE
     void deleteById(Long id);
     void deleteAll();
+    List<Game> loadDatabase();
 }

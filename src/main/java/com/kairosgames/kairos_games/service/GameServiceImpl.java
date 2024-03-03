@@ -1,12 +1,13 @@
 package com.kairosgames.kairos_games.service;
 
 
+import org.hibernate.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.kairosgames.kairos_games.GameScrapper;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.repository.GameRepository;
 
-import io.micrometer.common.lang.NonNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -16,9 +17,16 @@ import java.util.Optional;
 public class GameServiceImpl implements GameService {
 
     private GameRepository repository;
+    private GameScrapper scrapper;
 
-    public GameServiceImpl(GameRepository repository) {
+    public GameServiceImpl(GameRepository repository, GameScrapper scrapper) {
         this.repository = repository;
+        this.scrapper = scrapper;
+    }
+
+    @Override
+    public List<Game> loadDatabase(){
+        return this.scrapper.getInstaGames();
     }
 
     @Override
@@ -44,6 +52,11 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public Game update(Long id, Game game){
+        return null;
+    }
+
+    @Override
     public void deleteById(Long id) {
         this.deleteById(id);
     }
@@ -52,4 +65,5 @@ public class GameServiceImpl implements GameService {
     public void deleteAll() {
     this.repository.deleteAll();
     }
+
 }

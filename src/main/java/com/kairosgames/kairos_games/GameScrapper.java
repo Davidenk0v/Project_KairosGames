@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.json.JSONObject;
 
 import com.kairosgames.kairos_games.model.Game;
+import com.kairosgames.kairos_games.service.GameService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -17,8 +18,8 @@ import java.util.List;
 @Component
 public class GameScrapper
 {
-    public GameScrapper(){
 
+    public GameScrapper(){
     }
 
     public List<Game> getG2AGamesUrl(){
@@ -27,12 +28,11 @@ public class GameScrapper
         try{
             Document document = Jsoup.connect(URL).get();
             Elements games = document.select("section li");
-            System.out.println(document);
             for (Element game: games){
                 String title = game.select("div > h3").text();
                 String price = game.select("li span[data-locator]").text();
                 if(!title.isEmpty() || !price.isEmpty()){
-                    gamesList.add(new Game(null, title, price));
+                    gamesList.add(new Game(null, title, new BigDecimal(price)));
                 }
             }
         }catch(IOException e){
@@ -49,7 +49,6 @@ public class GameScrapper
                 Elements games = document.select(".item");
 
                 for (Element game: games){
-                    // String title = game.select(".name").text();
                     String link = game.select("a").attr("href");
                     urlList.add(link);
                 }
@@ -60,23 +59,23 @@ public class GameScrapper
         }
 
         public List<Game> getInstaGames(){
-            List<Game> games = new ArrayList<>();
             List<String> urlsList = getInstaGamingGamesURL();
+            List<Game> gamesList = new ArrayList<>();
             try{
                 for(String url: urlsList){
                     Document html = Jsoup.connect(url).get();
                     Element data = html.selectFirst(".data");
                     String name = data.select(".game-title").text();
-                    String actual_price = data.select(".total").text();
-                    actual_price = actual_price.substring(0, actual_price.length() -1 );
+                    String actualPrice = data.select(".total").text();
+                    actualPrice = actualPrice.substring(0, actualPrice.length() -1 );
                     String urlImg = data.select("picture > img").attr("data-src");
-                    games.add(new Game(name, urlImg, new BigDecimal(actual_price)));
+                        gamesList.add(new Game(name, urlImg, new BigDecimal(actualPrice)));
                 }
             }catch(IOException e){
                 JSONObject errorJson = new JSONObject();
                 errorJson.put("error", e.getMessage());
             }
-            return games;
+            return gamesList;
         }
 
 }
