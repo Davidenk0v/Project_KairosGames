@@ -26,11 +26,13 @@ public class GameServiceImpl implements GameService {
         return this.repository.findAll();
     }
 
+
     @Override
     public List<Game> findByname(String name) {
         Objects.requireNonNull(name);
         return this.repository.findByName(name);
     }
+
 
     @Override
     public Optional<Game> findById(Long id) {
