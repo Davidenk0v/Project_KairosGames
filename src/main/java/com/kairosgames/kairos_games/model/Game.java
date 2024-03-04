@@ -19,37 +19,35 @@ public class Game {
     private BigDecimal actualPrice;
 
     @Column(name = "lower_price")
-    private BigDecimal lowPrice = new BigDecimal(0);
+    private BigDecimal lowerPrice = new BigDecimal(0);
 
     @Column(name = "higher_price")
-    private BigDecimal highPrice = new BigDecimal(0);
+    private BigDecimal higherPrice = new BigDecimal(0);
 
     @Column(name = "url_img")
     private String urlImg;
 
+    @Column(name = "url_page")
+    private String urlPage;
+
     public Game() {
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage) {
         this.id = id;
         this.name = name;
         this.setActualPrice(actualPrice);
         this.urlImg = urlImg;
+        this.urlPage = urlPage;
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price, String urlPage) {
         this.id = id;
         this.name = name;
-        this.actualPrice = actualPrice;
         this.urlImg = urlImg;
-        this.highPrice = high_price;
-        setLowPrice(actualPrice);
-    }
-
-    public Game(String name, String urlImg, BigDecimal actualPrice) {
-        this.name = name;
-        this.actualPrice = actualPrice;
-        this.urlImg = urlImg;
+        this.higherPrice = high_price;
+        this.setActualPrice(actualPrice);
+        this.urlPage = urlPage;
     }
 
     public Long getId() {
@@ -89,22 +87,22 @@ public class Game {
     }
 
     public BigDecimal getLowPrice() {
-        return lowPrice;
+        return lowerPrice;
     }
 
     public void setLowPrice(BigDecimal newPrice) {
-        if (newPrice.compareTo(this.lowPrice) < 0) {
-            this.lowPrice = newPrice;
+        if (newPrice.compareTo(this.lowerPrice) < 0) {
+            this.lowerPrice = newPrice;
         }
     }
 
     public BigDecimal getHighPrice() {
-        return highPrice;
+        return higherPrice;
     }
 
     public void setHighPrice(BigDecimal newPrice) {
-        if (newPrice.compareTo(this.highPrice) > 0) {
-            this.highPrice = newPrice;
+        if (newPrice.compareTo(this.higherPrice) > 0) {
+            this.higherPrice = newPrice;
         }
     }
 
@@ -114,9 +112,10 @@ public class Game {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", actualPrice=" + actualPrice +
-                ", lowPrice=" + lowPrice +
-                ", highPrice=" + highPrice +
+                ", lowerPrice=" + lowerPrice +
+                ", higherPrice=" + higherPrice +
                 ", url_img=" + urlImg +
+                ", url_page=" + urlPage +
                 '}';
     }
 }
