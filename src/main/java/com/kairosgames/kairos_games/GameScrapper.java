@@ -41,12 +41,12 @@ public class GameScrapper {
                     Element high_priceElement = game.select("div.iqjN1x span.L5ErLT").first();
 
                     if (high_priceElement == null) {
-                        gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, ""));
+                        gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, "", "", ""));
                     } else {
                         String high_price = high_priceElement.text();
                         high_price = (high_price.substring(0, high_price.length() - 1).replace(",", ".")).trim();
                         gamesList.add(
-                                new Game(null, title, new BigDecimal(price), urlImg, new BigDecimal(high_price), ""));
+                                new Game(null, title, new BigDecimal(price), urlImg, new BigDecimal(high_price), "", ""));
                     }
 
                 }
@@ -86,7 +86,7 @@ public class GameScrapper {
                 String actualPrice = data.select(".total").text();
                 actualPrice = actualPrice.substring(0, actualPrice.length() - 1);
                 String urlImg = data.select("picture > img").attr("data-src");
-                gamesList.add(new Game(null, name, new BigDecimal(actualPrice), urlImg, ""));
+                gamesList.add(new Game(null, name, new BigDecimal(actualPrice), urlImg, "test", "test", "instGames"));
             }
         } catch (IOException e) {
             JSONObject errorJson = new JSONObject();
