@@ -61,6 +61,7 @@ public class GameScrapper
         public List<Game> enebaDestacados(){
             List<Game> destacadosEneba = new ArrayList<>();
             try{
+
                 String url = "https://www.eneba.com/es/";
                 Document document = Jsoup.connect(url).get();
                 Elements section = document.select("section.vvAKar");
