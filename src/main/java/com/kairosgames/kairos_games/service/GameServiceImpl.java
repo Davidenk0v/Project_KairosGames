@@ -25,7 +25,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<Game> loadDatabase() {
-        return this.scrapper.getInstaGames();
+        return this.scrapper.getEnebaGames();
     }
 
     @Override

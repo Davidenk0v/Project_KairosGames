@@ -15,39 +15,51 @@ public class Game {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "url_img")
+    private String urlImg;
+
     @Column(name = "actual_price")
     private BigDecimal actualPrice;
-
-    @Column(name = "lower_price")
-    private BigDecimal lowerPrice = new BigDecimal(0);
 
     @Column(name = "higher_price")
     private BigDecimal higherPrice = new BigDecimal(0);
 
-    @Column(name = "url_img")
-    private String urlImg;
+    @Column(name = "lower_price")
+    private BigDecimal lowerPrice = new BigDecimal(0);
 
     @Column(name = "url_page")
     private String urlPage;
 
+    @Column(name = "platform")
+    private String platform;
+
+    @Column(name = "shop")
+    private String shop;
+
     public Game() {
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage, String platform,
+                String shop) {
         this.id = id;
         this.name = name;
         this.setActualPrice(actualPrice);
         this.urlImg = urlImg;
         this.urlPage = urlPage;
+        this.platform = platform;
+        this.shop = shop;
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price, String urlPage) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price, String urlPage,
+                String platform ,String shop) {
         this.id = id;
         this.name = name;
         this.urlImg = urlImg;
         this.higherPrice = high_price;
         this.setActualPrice(actualPrice);
         this.urlPage = urlPage;
+        this.platform = platform;
+        this.shop = shop;
     }
 
     public Long getId() {
@@ -66,11 +78,11 @@ public class Game {
         this.name = name;
     }
 
-    public String getUrl() {
+    public String getUrlImg() {
         return urlImg;
     }
 
-    public void setUrl(String urlImg) {
+    public void setUrlImg(String urlImg) {
         this.urlImg = urlImg;
     }
 
@@ -86,16 +98,6 @@ public class Game {
         this.actualPrice = actualPrice;
     }
 
-    public BigDecimal getLowPrice() {
-        return lowerPrice;
-    }
-
-    public void setLowPrice(BigDecimal newPrice) {
-        if (newPrice.compareTo(this.lowerPrice) < 0) {
-            this.lowerPrice = newPrice;
-        }
-    }
-
     public BigDecimal getHighPrice() {
         return higherPrice;
     }
@@ -104,6 +106,40 @@ public class Game {
         if (newPrice.compareTo(this.higherPrice) > 0) {
             this.higherPrice = newPrice;
         }
+    }
+
+    public BigDecimal getLowPrice() {
+        return lowerPrice;
+    }
+
+    public void setLowPrice(BigDecimal newPrice) {
+        if (newPrice.compareTo(this.lowerPrice) < 0 || lowerPrice.compareTo(BigDecimal.ZERO) == 0) {
+            this.lowerPrice = newPrice;
+        }
+    }
+
+    public String getUrlPage() {
+        return urlPage;
+    }
+
+    public void setUrlPage(String urlPage) {
+        this.urlPage = urlPage;
+    }
+
+    public String getPlatform() {
+        return platform;
+    }
+
+    public void setPlataform(String plataform) {
+        this.platform = plataform;
+    }
+
+    public String getShop() {
+        return shop;
+    }
+
+    public void setShop(String shop) {
+        this.shop = shop;
     }
 
     @Override
@@ -116,6 +152,8 @@ public class Game {
                 ", higherPrice=" + higherPrice +
                 ", url_img=" + urlImg +
                 ", url_page=" + urlPage +
+                ", plataform=" + platform +
+                ", shop=" + shop +
                 '}';
     }
 }
