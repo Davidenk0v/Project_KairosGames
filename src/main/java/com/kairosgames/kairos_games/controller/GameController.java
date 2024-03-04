@@ -74,6 +74,15 @@ public class GameController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    @RequestMapping("/prueba")
+    public ResponseEntity<List<Game>> prueba(){
+        List<Game> games = scrapper.g2aDestacados();
+        if(games.isEmpty())
+            return ResponseEntity.notFound().build();
+
+        return ResponseEntity.ok(games);
+    }
+
     @PostMapping("/games")
     public ResponseEntity<Game> create (@RequestBody Game game){
         if(game.getId() != null)

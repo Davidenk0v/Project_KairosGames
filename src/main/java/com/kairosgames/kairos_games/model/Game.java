@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 
-
 @Entity
 @Table(name = "games")
 public class Game {
@@ -13,19 +12,19 @@ public class Game {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name= "name")
+    @Column(name = "name")
     private String name;
 
-    @Column(name= "actual_price")
+    @Column(name = "actual_price")
     private BigDecimal actualPrice;
 
-    @Column(name= "lower_price")
+    @Column(name = "lower_price")
     private BigDecimal lowPrice = new BigDecimal(0);
 
-    @Column(name= "higher_price")
+    @Column(name = "higher_price")
     private BigDecimal highPrice = new BigDecimal(0);
 
-    @Column(name= "url_img")
+    @Column(name = "url_img")
     private String urlImg;
 
     public Game() {
@@ -36,6 +35,15 @@ public class Game {
         this.name = name;
         this.setActualPrice(actualPrice);
         this.urlImg = urlImg;
+    }
+
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price) {
+        this.id = id;
+        this.name = name;
+        this.actualPrice = actualPrice;
+        this.urlImg = urlImg;
+        this.highPrice = high_price;
+        setLowPrice(actualPrice);
     }
 
     public Game(String name, String urlImg, BigDecimal actualPrice) {
@@ -51,7 +59,6 @@ public class Game {
     public void setId(Long id) {
         this.id = id;
     }
-    
 
     public String getName() {
         return name;
@@ -73,7 +80,8 @@ public class Game {
         return actualPrice;
     }
 
-    //Al settear el precio compara si es el mayor o menor precio que ha tenido el juego
+    // Al settear el precio compara si es el mayor o menor precio que ha tenido el
+    // juego
     public void setActualPrice(BigDecimal actualPrice) {
         setLowPrice(actualPrice);
         setHighPrice(actualPrice);
@@ -85,7 +93,7 @@ public class Game {
     }
 
     public void setLowPrice(BigDecimal newPrice) {
-        if(newPrice.compareTo(this.lowPrice) < 0 ){
+        if (newPrice.compareTo(this.lowPrice) < 0) {
             this.lowPrice = newPrice;
         }
     }
@@ -106,9 +114,9 @@ public class Game {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", actualPrice=" + actualPrice +
-                ", lowPrice="+ lowPrice +
-                ", highPrice="+ highPrice +
-                ", url_img="+ urlImg +
+                ", lowPrice=" + lowPrice +
+                ", highPrice=" + highPrice +
+                ", url_img=" + urlImg +
                 '}';
     }
 }
