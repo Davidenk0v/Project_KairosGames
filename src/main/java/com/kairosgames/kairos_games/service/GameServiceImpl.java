@@ -1,13 +1,12 @@
 package com.kairosgames.kairos_games.service;
 
-
 import org.hibernate.ObjectNotFoundException;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.kairosgames.kairos_games.GameScrapper;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.repository.GameRepository;
-
 
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +24,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public List<Game> loadDatabase(){
+    public List<Game> loadDatabase() {
         return this.scrapper.getInstaGames();
     }
 
@@ -34,13 +33,20 @@ public class GameServiceImpl implements GameService {
         return this.repository.findAll();
     }
 
+    @Override
+    public ResponseEntity<List<Game>> prueba() {
+        List<Game> games = scrapper.getEnebaGames();
+        if (games.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(games);
+    }
 
     @Override
     public List<Game> findByname(String name) {
         Objects.requireNonNull(name);
         return this.repository.findByName(name);
     }
-
 
     @Override
     public Optional<Game> findById(Long id) {
@@ -54,7 +60,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game update(Long id, Game game){
+    public Game update(Long id, Game game) {
         return null;
     }
 
@@ -65,7 +71,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public void deleteAll() {
-    this.repository.deleteAll();
+        this.repository.deleteAll();
     }
 
 }
