@@ -30,6 +30,5 @@ public interface GameService {
     void deleteAll();
 
     List<Game> loadDatabase();
-
-    ResponseEntity<List<Game>> prueba();
+    List<String> prueba();
 }

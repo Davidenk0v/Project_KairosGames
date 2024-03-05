@@ -75,7 +75,7 @@ public class GameController {
     }
 
     @RequestMapping("/prueba")
-    public ResponseEntity<List<Game>> prueba() {
+    public List<String> prueba() {
         return this.service.prueba();
     }
 

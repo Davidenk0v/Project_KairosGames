@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.service;
 
+import com.kairosgames.kairos_games.DestacadosGameScrapper;
 import org.hibernate.ObjectNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -17,10 +18,12 @@ public class GameServiceImpl implements GameService {
 
     private GameRepository repository;
     private GameScrapper scrapper;
+    private DestacadosGameScrapper destacados;
 
-    public GameServiceImpl(GameRepository repository, GameScrapper scrapper) {
+    public GameServiceImpl(GameRepository repository, GameScrapper scrapper, DestacadosGameScrapper destacados) {
         this.repository = repository;
         this.scrapper = scrapper;
+        this.destacados = destacados;
     }
 
     @Override
@@ -34,12 +37,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResponseEntity<List<Game>> prueba() {
-        List<Game> games = scrapper.getEnebaGames();
-        if (games.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(games);
+    public List<String> prueba() {
+        return this.destacados.getDestacadosInstaGames();
     }
 
     @Override
