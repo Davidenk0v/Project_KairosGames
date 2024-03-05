@@ -50,13 +50,13 @@ public class Game {
         this.shop = shop;
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price, String urlPage,
-            String shop) {
-        this.id = id;
+    public Game(String name, BigDecimal actualPrice, String urlImg, BigDecimal highPrice, String platform,
+            String urlPage, String shop) {
         this.name = name;
         this.urlImg = urlImg;
-        this.higherPrice = high_price;
+        this.higherPrice = highPrice;
         this.setActualPrice(actualPrice);
+        this.platform = platform;
         this.urlPage = urlPage;
         this.shop = shop;
     }
@@ -112,7 +112,7 @@ public class Game {
     }
 
     public void setLowPrice(BigDecimal newPrice) {
-        if (newPrice.compareTo(this.lowerPrice) < 0) {
+        if (newPrice.compareTo(this.lowerPrice) < 0 || lowerPrice.compareTo(BigDecimal.ZERO) == 0) {
             this.lowerPrice = newPrice;
         }
     }
