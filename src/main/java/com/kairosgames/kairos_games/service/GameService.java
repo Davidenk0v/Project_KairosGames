@@ -31,5 +31,5 @@ public interface GameService {
 
     List<Game> loadDatabase();
 
-    ResponseEntity<List<Game>> prueba();
+    ResponseEntity<List<String>> prueba();
 }

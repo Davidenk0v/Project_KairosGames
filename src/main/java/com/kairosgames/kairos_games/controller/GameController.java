@@ -74,8 +74,8 @@ public class GameController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RequestMapping("/prueba")
-    public ResponseEntity<List<Game>> prueba() {
+    @RequestMapping("/test")
+    public ResponseEntity<List<String>> prueba() {
         return this.service.prueba();
     }
 

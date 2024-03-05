@@ -34,8 +34,8 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public ResponseEntity<List<Game>> prueba() {
-        List<Game> games = scrapper.getEnebaGames();
+    public ResponseEntity<List<String>> prueba() {
+        List<String> games = scrapper.getG2aURL();
         if (games.isEmpty()) {
             return ResponseEntity.notFound().build();
         }

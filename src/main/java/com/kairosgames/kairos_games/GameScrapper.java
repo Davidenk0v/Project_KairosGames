@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 @Component
 public class GameScrapper {
@@ -43,6 +44,26 @@ public class GameScrapper {
         return urlList;
     }
 
+    public List<String> getG2aURL() {
+        List<String> urlList = new ArrayList<>();
+        // for (int i = 1; i <= 5; i++) {
+        final String URL = "https://k4g.com/es/store";
+        try {
+            Document document = Jsoup.connect(URL).get();
+            Elements games = document.select(".CardContent_mainContent__jMLEC");
+            logger.error("Cositas: " + games);
+            for (Element game : games) {
+                String link = game.select("a").attr("href");
+                urlList.add(link);
+                logger.error("Cositas 2: " + link);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return urlList;
+    }
+
+    // }
     public List<Game> getInstaGames() {
         List<String> urlsList = getInstaGamingGamesURL();
         List<Game> gamesList = new ArrayList<>();
@@ -68,5 +89,4 @@ public class GameScrapper {
         }
         return gamesList;
     }
-
 }
