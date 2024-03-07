@@ -32,7 +32,7 @@ public class DestacadosGameScrapper {
                 Element h1 = section.selectFirst("h1");
                 if (h1 != null && h1.text().equals("Los mejores juegos")) {
                     Element divSibling = (h1.parent()).nextElementSibling();
-                    Elements divs = divSibling.select(".BdZIev");
+                    Elements divs = divSibling.select(".uy1qit");
                     for (Element div : divs) {
                         logger.error(div.html());
                         String title = div.select(".YLosEl").text();
@@ -67,7 +67,6 @@ public class DestacadosGameScrapper {
     public List<String> getDestacadosInstaGames(){
         List<String> destacadosInstaGames = new ArrayList<>();
         try{
-
             String url = "https://www.instant-gaming.com/es/";
             Document document = Jsoup.connect(url).get();
             Elements games = document.select("div.products-trending .item");

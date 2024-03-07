@@ -38,7 +38,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public List<String> prueba() {
-        return this.destacados.getDestacadosInstaGames();
+        return this.destacados.getDestacadosG2a();
     }
 
     @Override
