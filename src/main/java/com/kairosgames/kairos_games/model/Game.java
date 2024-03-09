@@ -3,10 +3,12 @@ package com.kairosgames.kairos_games.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
+import java.util.Collections;
 
 @Entity
 @Table(name = "games")
-public class Game {
+public class Game implements Comparable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -140,6 +142,13 @@ public class Game {
     public void setShop(String shop) {
         this.shop = shop;
     }
+
+    public static Comparator<Game> CompareName = new Comparator<Game>() {
+        @Override
+        public int compare(Game g1, Game g2) {
+            return g1.getName().compareTo(g2.getName());
+        }
+    };
 
     @Override
     public String toString() {

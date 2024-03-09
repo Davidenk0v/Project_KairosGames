@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,6 +22,9 @@ public class GameController {
 
     private GameService service;
 
+    @Autowired
+    private Api
+
     public GameController(GameService service) {
         this.service = service;
     }
@@ -36,8 +40,12 @@ public class GameController {
                 this.service.save(game); // Si no encuentra ninguno juego con ese nombre lo añade a la base de datos
             } else {
                 for (Game game2 : sameName) {
-                    game2.setActualPrice(game.getActualPrice()); // Si encuentra alguno le actualiza el precio
-                    this.service.save(game2);
+                    if (game2.getPlatform().equals(game.getPlatform())) {
+                        this.service.save(game);
+                    } else {
+                        game2.setActualPrice(game.getActualPrice()); // Si encuentra alguno le actualiza el precio
+                        this.service.save(game2);
+                    }
                 }
             }
         }
@@ -57,7 +65,7 @@ public class GameController {
         return ResponseEntity.ok(games);
     }
 
-    @RequestMapping("/games/{name}")
+    @GetMapping("/games/{name}")
     public ResponseEntity<List<Game>> findByname(@PathVariable String name) {
         List<Game> games = service.findByname(name);
         if (games.isEmpty())
@@ -66,7 +74,7 @@ public class GameController {
         return ResponseEntity.ok(games);
     }
 
-    @RequestMapping("/games/{id}")
+    @GetMapping("/games/{id}")
     public ResponseEntity<Game> findById(@PathVariable Long id) {
 
         return this.service.findById(id)
