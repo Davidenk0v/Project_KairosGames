@@ -7,12 +7,9 @@ import org.jsoup.select.Elements;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import org.apache.logging.log4j.util.PropertySource.Comparator;
-import org.hibernate.mapping.Collection;
-import org.json.JSONObject;
 
+import com.kairosgames.kairos_games.exceptions.InternalServerErrorException;
 import com.kairosgames.kairos_games.model.Game;
-import com.kairosgames.kairos_games.service.GameService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -54,19 +51,16 @@ public class GameScrapper {
         try {
             String userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36";
             Document document = Jsoup.connect(URL).userAgent(userAgent).get();
-            logger.error("HTML:", document);
             Elements games = document
                     .select("h3");
-            logger.error("Cositas: " + games);
             for (Element game : games) {
                 String link = game.attr("id");
                 if (true) {
                     urlList.add(link);
                 }
-                logger.error("Cositas 2: " + link);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InternalServerErrorException("Error while loading data", e);
         }
         // }
         return urlList;
@@ -92,8 +86,7 @@ public class GameScrapper {
                         url, "InstaGaming"));
             }
         } catch (IOException e) {
-            JSONObject errorJson = new JSONObject();
-            errorJson.put("error", e.getMessage());
+            throw new InternalServerErrorException("Error while loading data from Instagames", e);
         }
         return gamesList;
     }
@@ -109,7 +102,15 @@ public class GameScrapper {
                 for (Element game : games) {
                     String title = game.select(".YLosEl").text();
                     String price = game.select("span.DTv7Ag span.L5ErLT").text();
-                    price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
+                    logger.error(price);
+                    logger.error(title);
+
+                    try{
+                        price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
+                    }catch(Exception e){
+                        price = "0";
+                    }finally{
+
                     Element imgElement = game.select("img").first();
                     String urlImg = imgElement.attr("src");
                     Element elementPage = game.select("a.oSVLlh").first();
@@ -127,12 +128,13 @@ public class GameScrapper {
                                 new Game(title, new BigDecimal(price), urlImg, new BigDecimal(high_price),
                                         urlPage, platform, "Eneba"));
                     }
+                }
 
                 }
             }
 
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InternalServerErrorException("Error while loading data from Eneba", e);
         }
         return gamesList;
     }
@@ -143,7 +145,7 @@ public class GameScrapper {
             Document document = Jsoup.connect(urlPage).get();
             platform = document.select("ul.oBo9oN li").text();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new InternalServerErrorException("Error while loading data from Eneba", e);
         }
         return platform;
     }
