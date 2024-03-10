@@ -1,6 +1,5 @@
 package com.kairosgames.kairos_games.service;
 
-import org.hibernate.ObjectNotFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 

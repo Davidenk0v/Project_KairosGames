@@ -5,7 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.kairosgames.kairos_games.GameScrapper;
+import com.kairosgames.kairos_games.controller_exceptions.ApiExceptionHandler;
+import com.kairosgames.kairos_games.controller_exceptions.ErrorMessage;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
 
@@ -21,13 +22,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class GameController {
 
     private GameService service;
+    private ApiExceptionHandler exception;
 
     @Autowired
-    private Api
-
-    public GameController(GameService service) {
-        this.service = service;
-    }
 
     // Esto aquí en provisional
     @RequestMapping("/")
@@ -65,15 +62,6 @@ public class GameController {
         return ResponseEntity.ok(games);
     }
 
-    @GetMapping("/games/{name}")
-    public ResponseEntity<List<Game>> findByname(@PathVariable String name) {
-        List<Game> games = service.findByname(name);
-        if (games.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(games);
-    }
-
     @GetMapping("/games/{id}")
     public ResponseEntity<Game> findById(@PathVariable Long id) {
 
@@ -82,10 +70,19 @@ public class GameController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @RequestMapping("/test")
-    public ResponseEntity<List<String>> prueba() {
-        return this.service.prueba();
+
+    //ESTE METODO SE DEBE ELIMINAR SOLO PARA TESTEAR
+    @GetMapping("/games/name/{name}")
+    public ResponseEntity<List<Game>> findByname(@PathVariable String name) {
+        List<Game> games = service.findByname(name);
+        if (games.isEmpty()){
+            //return ResponseEntity.notFound().build();
+            return throw new ErrorMessage(null, name);
+        }
+
+        return ResponseEntity.ok(games);
     }
+
 
     @PostMapping("/games")
     public ResponseEntity<Game> create(@RequestBody Game game) {

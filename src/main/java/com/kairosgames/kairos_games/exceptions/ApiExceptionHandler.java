@@ -13,9 +13,9 @@ import jakarta.servlet.http.HttpServletRequest;
 public class ApiExceptionHandler {
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({ BadRequestException.class })
+    @ExceptionHandler({ NotFoundException.class })
     @ResponseBody
-    public ErrorMessage badRequest(HttpServletRequest request, Exception exception) {
+    public ErrorMessage notFoundRequest(HttpServletRequest request, Exception exception) {
         return new ErrorMessage(exception, request.getRequestURI());
     }
 
@@ -31,6 +31,15 @@ public class ApiExceptionHandler {
     })
     @ResponseBody
     public ErrorMessage badRequest(HttpServletRequest request, Exception exception) {
+        return new ErrorMessage(exception, request.getRequestURI());
+    }
 
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler({
+        ForbiddenException.class
+    })
+    @ResponseBody
+    public ErrorMessage forbiddenRequest(HttpServletRequest request, Exception exception){
+        return new ErrorMessage(exception, request.getRequestURI());
     }
 }
