@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.json.JSONObject;
 
 import com.kairosgames.kairos_games.model.Game;
+import com.kairosgames.kairos_games.service.GameService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -37,19 +38,15 @@ public class GameScrapper {
                     price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
                     Element imgElement = game.select("img").first();
                     String urlImg = imgElement.attr("src");
-                    Element elementPage = game.select("a.oSVLlh").first();
-                    String urlPage = "https://www.eneba.com"+elementPage.attr("href");
                     Element high_priceElement = game.select("div.iqjN1x span.L5ErLT").first();
 
-                    String platform = getPlataformEneba(urlPage);
-
                     if (high_priceElement == null) {
-                        gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, urlPage, platform, "Eneba"));
+                        gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, "", "", ""));
                     } else {
                         String high_price = high_priceElement.text();
                         high_price = (high_price.substring(0, high_price.length() - 1).replace(",", ".")).trim();
                         gamesList.add(
-                                new Game(null, title, new BigDecimal(price), urlImg, new BigDecimal(high_price), urlPage, platform ,"Eneba"));
+                                new Game(null, title, new BigDecimal(price), urlImg, new BigDecimal(high_price), "", ""));
                     }
 
                 }
@@ -59,17 +56,6 @@ public class GameScrapper {
             e.printStackTrace();
         }
         return gamesList;
-    }
-
-    private String getPlataformEneba(String urlPage){
-        String platform = "";
-        try {
-            Document document = Jsoup.connect(urlPage).get();
-            platform = document.select("ul.oBo9oN li").text();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return platform;
     }
 
     private List<String> getInstaGamingGamesURL() {
@@ -100,7 +86,7 @@ public class GameScrapper {
                 String actualPrice = data.select(".total").text();
                 actualPrice = actualPrice.substring(0, actualPrice.length() - 1);
                 String urlImg = data.select("picture > img").attr("data-src");
-                gamesList.add(new Game(null, name, new BigDecimal(actualPrice), urlImg, "", "", ""));
+                gamesList.add(new Game(null, name, new BigDecimal(actualPrice), urlImg, "test", "test", "instGames"));
             }
         } catch (IOException e) {
             JSONObject errorJson = new JSONObject();
@@ -109,6 +95,4 @@ public class GameScrapper {
         return gamesList;
     }
 
-
-
-    }
+}
