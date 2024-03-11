@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -39,13 +40,40 @@ public class UserEntity {
     @Max(99)
     private Integer edad;
 
-    @ManyToOne(fetch = FetchType.EAGER, targetEntity = RoleEntity.class, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "userRoles", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private RoleEntity roles;
+    @Enumerated(EnumType.STRING)
+    private ERole rol;
 
-    @ManyToMany(fetch = FetchType.EAGER, targetEntity = Preferences.class, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "userPreferences", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "preferences_id"))
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_preferences", 
+    joinColumns = @JoinColumn(name = "user_id"), 
+    inverseJoinColumns = @JoinColumn(name = "preferences_id"))
     private Set<Preferences> preferences;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_game", 
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private Set<Game> user_games = new HashSet<>();
+
+    public ERole getRol() {
+        return rol;
+    }
+
+    public void setRol(ERole rol) {
+        this.rol = rol;
+    }
+
+    public void setPreferences(Set<Preferences> preferences) {
+        this.preferences = preferences;
+    }
+
+    public Set<Game> getUser_games() {
+        return user_games;
+    }
+
+    public void setUser_games(Game user_games) {
+        this.user_games.add(user_games);
+    }
 
     public Long getId() {
         return id;
@@ -102,4 +130,13 @@ public class UserEntity {
     public void setEdad(Integer edad) {
         this.edad = edad;
     }
+
+    public Set<Preferences> getPreferences(){
+        return this.preferences;
+    }
+
+    public void setPreferences(Preferences preferences){
+        this.preferences.add(preferences);
+    }
+
 }

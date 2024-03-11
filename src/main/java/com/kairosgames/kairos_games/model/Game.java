@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+@JsonIgnoreProperties("game_users")
 @Entity
 @Table(name = "games")
 public class Game implements Comparator<Game> {
@@ -38,6 +43,37 @@ public class Game implements Comparator<Game> {
     @Column(name = "shop")
     private String shop;
 
+    @ManyToMany(mappedBy = "user_games", fetch = FetchType.LAZY)
+    private Set<UserEntity> game_users = new HashSet<>();
+
+
+    public BigDecimal getHigherPrice() {
+        return higherPrice;
+    }
+
+    public void setHigherPrice(BigDecimal higherPrice) {
+        this.higherPrice = higherPrice;
+    }
+
+    public BigDecimal getLowerPrice() {
+        return lowerPrice;
+    }
+
+    public void setLowerPrice(BigDecimal lowerPrice) {
+        this.lowerPrice = lowerPrice;
+    }
+
+    public void setPlatform(String platform) {
+        this.platform = platform;
+    }
+
+    public Set<UserEntity> getGame_users() {
+        return game_users;
+    }
+
+    public void setGame_users(Set<UserEntity> game_users) {
+        this.game_users = game_users;
+    }
 
     public Game() {
     }

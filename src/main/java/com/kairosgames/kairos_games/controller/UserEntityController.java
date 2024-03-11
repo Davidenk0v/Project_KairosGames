@@ -1,29 +1,38 @@
-/* package com.kairosgames.kairos_games.controller;
+package com.kairosgames.kairos_games.controller;
 
 
 import com.kairosgames.kairos_games.model.ERole;
 import com.kairosgames.kairos_games.model.RoleEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.UserRepository;
+import com.kairosgames.kairos_games.service.UserDetailService;
+
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+
 
 @RestController
+@RequestMapping("/api")
 public class UserEntityController {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+/*     @Autowired
+    private PasswordEncoder passwordEncoder; */
 
     @Autowired
-    private UserRepository userRepository; */
-/* 
-    @PostMapping("/createUser")
+    private UserDetailService service; 
+
+    /* @PostMapping("/createUser")
     public ResponseEntity<?> createUser(){
 
         Set<RoleEntity> roles = createUserDTO.getRoles().stream()
@@ -43,10 +52,38 @@ public class UserEntityController {
 
         return ResponseEntity.ok(userEntity);
     } */
-
-/*     @DeleteMapping("/deleteUser")
-    public String deleteUser(@RequestParam String id){
-        userRepository.deleteById(Long.parseLong(id));
-        return "Se ha borrado el user con id".concat((id));
+    @GetMapping("/users")
+    public ResponseEntity<List<UserEntity>> getAllUsers(){
+        return ResponseEntity.ok(this.service.findAll());
     }
-} */
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserEntity> findById(@PathVariable Long id){
+        return ResponseEntity.ok(this.service.findById(id).get());
+    }
+
+    @GetMapping("/users/name/{name}")
+    public ResponseEntity<List<UserEntity>> findByUserName(@PathVariable String username){
+        return ResponseEntity.ok(this.service.findByUsername(username));
+    }
+
+    @PostMapping("/users/games/add/{user_id}/{game_id}")
+    public ResponseEntity addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
+        this.service.addGameToPreference(user_id, game_id);
+        
+        return ResponseEntity.ok("Añadido");
+    }
+    
+    
+    
+
+
+
+
+
+    @DeleteMapping("/users/{id}")
+    public ResponseEntity<String> deleteUser(@RequestParam String id){
+        this.service.deleteById(Long.parseLong(id));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User eliminated");
+    }
+} 
