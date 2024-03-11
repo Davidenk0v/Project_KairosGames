@@ -1,6 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
-import com.kairosgames.kairos_games.controller.request.CreateUserDTO;
+
 import com.kairosgames.kairos_games.model.ERole;
 import com.kairosgames.kairos_games.model.RoleEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
@@ -24,7 +24,7 @@ public class UserEntityController {
     private UserRepository userRepository;
 
     @PostMapping("/createUser")
-    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserDTO createUserDTO){
+    public ResponseEntity<?> createUser(){
 
         Set<RoleEntity> roles = createUserDTO.getRoles().stream()
                 .map(role -> RoleEntity.builder()
