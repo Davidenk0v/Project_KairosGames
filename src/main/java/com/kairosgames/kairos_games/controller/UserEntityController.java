@@ -1,4 +1,4 @@
-package com.kairosgames.kairos_games.controller;
+/* package com.kairosgames.kairos_games.controller;
 
 
 import com.kairosgames.kairos_games.model.ERole;
@@ -21,8 +21,8 @@ public class UserEntityController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserRepository userRepository;
-
+    private UserRepository userRepository; */
+/* 
     @PostMapping("/createUser")
     public ResponseEntity<?> createUser(){
 
@@ -42,11 +42,11 @@ public class UserEntityController {
         userRepository.save(userEntity);
 
         return ResponseEntity.ok(userEntity);
-    }
+    } */
 
-    @DeleteMapping("/deleteUser")
+/*     @DeleteMapping("/deleteUser")
     public String deleteUser(@RequestParam String id){
         userRepository.deleteById(Long.parseLong(id));
         return "Se ha borrado el user con id".concat((id));
     }
-}
+} */

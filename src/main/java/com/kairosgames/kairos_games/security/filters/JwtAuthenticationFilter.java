@@ -1,4 +1,4 @@
-package com.kairosgames.kairos_games.security.filters;
+/* package com.kairosgames.kairos_games.security.filters;
 
 import com.fasterxml.jackson.core.exc.StreamReadException;
 import com.fasterxml.jackson.databind.DatabindException;
@@ -76,3 +76,4 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         super.successfulAuthentication(request, response, chain, authResult);
     }
 }
+ */

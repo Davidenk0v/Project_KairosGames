@@ -1,4 +1,4 @@
-package com.kairosgames.kairos_games.security;
+/* package com.kairosgames.kairos_games.security;
 
 import com.kairosgames.kairos_games.security.filters.JwtAuthenticationFilter;
 import com.kairosgames.kairos_games.security.jwt.JwtUtils;
@@ -70,3 +70,4 @@ public class SecurityConfig {
         }
     }
 }
+ */

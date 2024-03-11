@@ -1,4 +1,4 @@
-package com.kairosgames.kairos_games.security.jwt;
+/* package com.kairosgames.kairos_games.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -76,3 +76,4 @@ public class JwtUtils {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 }
+ */
