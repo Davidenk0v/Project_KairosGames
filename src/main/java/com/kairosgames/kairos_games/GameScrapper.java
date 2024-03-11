@@ -119,7 +119,10 @@ public class GameScrapper {
 
                     String platform = getPlataformEneba(urlPage);
 
+                    String platform = getPlataformEneba(urlPage);
+
                     if (high_priceElement == null) {
+                        gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, urlPage, platform, "Eneba"));
                         gamesList.add(new Game(null, title, new BigDecimal(price), urlImg, urlPage, platform, "Eneba"));
                     } else {
                         String high_price = high_priceElement.text();
@@ -137,6 +140,17 @@ public class GameScrapper {
             throw new InternalServerErrorException("Error while loading data from Eneba", e);
         }
         return gamesList;
+    }
+
+    private String getPlataformEneba(String urlPage){
+        String platform = "";
+        try {
+            Document document = Jsoup.connect(urlPage).get();
+            platform = document.select("ul.oBo9oN li").text();
+        } catch (IOException e) {
+            throw new InternalServerErrorException("Error while loading data from Eneba", e);
+        }
+        return platform;
     }
 
     private String getPlataformEneba(String urlPage) {
