@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.json.JSONObject;
 
 import com.kairosgames.kairos_games.model.Game;
-import com.kairosgames.kairos_games.service.GameService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -110,4 +109,6 @@ public class GameScrapper {
         return gamesList;
     }
 
-}
+
+
+    }

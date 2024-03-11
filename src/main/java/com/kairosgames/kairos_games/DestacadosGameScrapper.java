@@ -21,32 +21,6 @@ public class DestacadosGameScrapper {
 
     private final Logger logger = LoggerFactory.getLogger(GameScrapper.class);
 
-    public List<String> getDestacadosEneba(){
-        List<String> destacadosEneba = new ArrayList<>();
-        try{
-
-            String url = "https://www.eneba.com/es/";
-            Document document = Jsoup.connect(url).get();
-            Elements sections = document.select("section");
-            for (Element section : sections){
-                Element h1 = section.selectFirst("h1");
-                if (h1 != null && h1.text().equals("Los mejores juegos")) {
-                    Element divSibling = (h1.parent()).nextElementSibling();
-                    Elements divs = divSibling.select(".uy1qit");
-                    for (Element div : divs) {
-                        logger.error(div.html());
-                        String title = div.select(".YLosEl").text();
-                        logger.error(title);
-                        destacadosEneba.add(title);
-                    }
-                }
-            }
-        }catch(IOException e){
-            e.printStackTrace();
-        }
-        return destacadosEneba;
-    }
-
     public List<String> getDestacadosG2a(){
         List<String> destacadosG2a = new ArrayList<>();
         try{
@@ -79,5 +53,6 @@ public class DestacadosGameScrapper {
         }
         return destacadosInstaGames;
     }
+
 
 }

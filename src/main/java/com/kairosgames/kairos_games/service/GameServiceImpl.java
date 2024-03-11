@@ -1,8 +1,6 @@
 package com.kairosgames.kairos_games.service;
 
 import com.kairosgames.kairos_games.DestacadosGameScrapper;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.kairosgames.kairos_games.GameScrapper;
