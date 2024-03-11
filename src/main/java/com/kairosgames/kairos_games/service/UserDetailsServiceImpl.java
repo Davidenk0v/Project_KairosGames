@@ -20,7 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepository;
 
-    @Override
+/*     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("El usuario " +username+" no existe"));
@@ -28,5 +28,5 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 .stream().map(role -> new SimpleGrantedAuthority("ROLE".concat(role.getName().name())))
                 .collect(Collectors.toSet());
         return new User(userEntity.getUsername(), userEntity.getPassword(),true, true , true ,true, authorities);
-    }
+    } */
 }
