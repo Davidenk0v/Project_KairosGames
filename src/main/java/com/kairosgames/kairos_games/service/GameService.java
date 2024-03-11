@@ -30,5 +30,4 @@ public interface GameService {
     void deleteAll();
 
     List<Game> loadDatabase();
-    List<String> prueba();
 }

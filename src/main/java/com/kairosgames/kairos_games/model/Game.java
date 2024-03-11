@@ -3,10 +3,11 @@ package com.kairosgames.kairos_games.model;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
+import java.util.Comparator;
 
 @Entity
 @Table(name = "games")
-public class Game {
+public class Game implements Comparator<Game> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -14,6 +15,9 @@ public class Game {
 
     @Column(name = "name")
     private String name;
+
+    @Column(name = "url_img")
+    private String urlImg;
 
     @Column(name = "url_img")
     private String urlImg;
@@ -26,6 +30,8 @@ public class Game {
 
     @Column(name = "lower_price")
     private BigDecimal lowerPrice = new BigDecimal(0);
+    @Column(name = "lower_price")
+    private BigDecimal lowerPrice = new BigDecimal(0);
 
     @Column(name = "url_page")
     private String urlPage;
@@ -36,11 +42,16 @@ public class Game {
     @Column(name = "shop")
     private String shop;
 
+    @Column(name = "platform")
+    private String platform;
+
+    @Column(name = "shop")
+    private String shop;
+
     public Game() {
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage, String platform,
-            String shop) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage) {
         this.id = id;
         this.name = name;
         this.setActualPrice(actualPrice);
@@ -48,15 +59,17 @@ public class Game {
         this.urlPage = urlPage;
         this.platform = platform;
         this.shop = shop;
+        this.platform = platform;
+        this.shop = shop;
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, BigDecimal high_price, String urlPage,
-            String shop) {
-        this.id = id;
+    public Game(String name, BigDecimal actualPrice, String urlImg, BigDecimal highPrice, String platform,
+            String urlPage, String shop) {
         this.name = name;
         this.urlImg = urlImg;
-        this.higherPrice = high_price;
+        this.higherPrice = highPrice;
         this.setActualPrice(actualPrice);
+        this.platform = platform;
         this.urlPage = urlPage;
         this.shop = shop;
     }
@@ -78,9 +91,11 @@ public class Game {
     }
 
     public String getUrlImg() {
+    public String getUrlImg() {
         return urlImg;
     }
 
+    public void setUrlImg(String urlImg) {
     public void setUrlImg(String urlImg) {
         this.urlImg = urlImg;
     }
@@ -112,7 +127,7 @@ public class Game {
     }
 
     public void setLowPrice(BigDecimal newPrice) {
-        if (newPrice.compareTo(this.lowerPrice) < 0) {
+        if (newPrice.compareTo(this.lowerPrice) < 0 || lowerPrice.compareTo(BigDecimal.ZERO) == 0) {
             this.lowerPrice = newPrice;
         }
     }
@@ -140,6 +155,14 @@ public class Game {
     public void setShop(String shop) {
         this.shop = shop;
     }
+
+
+    public final static Comparator<Game> CompareName = new Comparator<Game>() {
+        @Override
+        public int compare(Game g1, Game g2) {
+            return g1.getName().compareTo(g2.getName());
+        }
+    };
 
     @Override
     public String toString() {
