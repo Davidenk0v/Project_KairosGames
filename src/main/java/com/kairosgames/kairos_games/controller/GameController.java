@@ -36,6 +36,7 @@ public class GameController {
         return ResponseEntity.ok(this.service.findAll());
     }
 
+
     @GetMapping("/games/{id}")
     public ResponseEntity<Game> findById(@PathVariable Long id) {
             return ResponseEntity.ok(this.service.findById(id).get());

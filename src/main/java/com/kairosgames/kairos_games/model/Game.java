@@ -19,17 +19,12 @@ public class Game implements Comparator<Game> {
     @Column(name = "url_img")
     private String urlImg;
 
-    @Column(name = "url_img")
-    private String urlImg;
-
     @Column(name = "actual_price")
     private BigDecimal actualPrice;
 
     @Column(name = "higher_price")
     private BigDecimal higherPrice = new BigDecimal(0);
 
-    @Column(name = "lower_price")
-    private BigDecimal lowerPrice = new BigDecimal(0);
     @Column(name = "lower_price")
     private BigDecimal lowerPrice = new BigDecimal(0);
 
@@ -42,23 +37,15 @@ public class Game implements Comparator<Game> {
     @Column(name = "shop")
     private String shop;
 
-    @Column(name = "platform")
-    private String platform;
-
-    @Column(name = "shop")
-    private String shop;
-
     public Game() {
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage, String platform, String shop) {
         this.id = id;
         this.name = name;
         this.setActualPrice(actualPrice);
         this.urlImg = urlImg;
         this.urlPage = urlPage;
-        this.platform = platform;
-        this.shop = shop;
         this.platform = platform;
         this.shop = shop;
     }
@@ -91,11 +78,9 @@ public class Game implements Comparator<Game> {
     }
 
     public String getUrlImg() {
-    public String getUrlImg() {
         return urlImg;
     }
 
-    public void setUrlImg(String urlImg) {
     public void setUrlImg(String urlImg) {
         this.urlImg = urlImg;
     }
@@ -177,5 +162,10 @@ public class Game implements Comparator<Game> {
                 ", plataform=" + platform +
                 ", shop=" + shop +
                 '}';
+    }
+
+    @Override
+    public int compare(Game o1, Game o2) {
+        return 0;
     }
 }
