@@ -1,6 +1,7 @@
 package com.kairosgames.kairos_games.service;
 
 import com.kairosgames.kairos_games.TrendingGameScrapper;
+import com.kairosgames.kairos_games.exceptions.GameNotFoundException;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.Trending;
 import com.kairosgames.kairos_games.repository.GameRepository;
@@ -8,6 +9,7 @@ import com.kairosgames.kairos_games.repository.TrendingRepository;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -41,6 +43,22 @@ public class TrendingService {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Game> findAll(){
+        List<Game> games = new ArrayList<>();
+        if(this.trendingRepository.findAll().isEmpty()){
+            throw new GameNotFoundException("No games found in database");
+        }
+        List<Trending> id_games = this.trendingRepository.findAll();
+        for (Trending trending : id_games){
+            Long gameId = trending.getId();
+            Game game = gameRepository.findById(gameId).orElse(null);
+            if(game != null){
+                games.add(game);
+            }
+        }
+        return games;
     }
 
 }

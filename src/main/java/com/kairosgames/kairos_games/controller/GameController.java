@@ -39,8 +39,8 @@ public class GameController {
     }
 
     @GetMapping("/games/trending")
-    public ResponseEntity<Set<String>> getTrendingGames(){
-        return ResponseEntity.ok(this.trendingService.loadDatabase());
+    public ResponseEntity<List<Game>> getTrendingGames(){
+        return ResponseEntity.ok(this.trendingService.findAll());
     }
 
     @GetMapping("/games/{id}")
