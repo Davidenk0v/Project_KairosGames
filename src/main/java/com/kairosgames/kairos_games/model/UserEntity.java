@@ -6,13 +6,22 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
+@Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +49,8 @@ public class UserEntity {
     @Max(99)
     private Integer edad;
 
+    @Enumerated(EnumType.STRING)
+    private ERole rol;
     @Enumerated(EnumType.STRING)
     private ERole rol;
 
@@ -75,60 +86,49 @@ public class UserEntity {
         this.user_games.add(user_games);
     }
 
-    public Long getId() {
-        return id;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_game", 
+    joinColumns = @JoinColumn(name = "user_id"),
+    inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private Set<Game> user_games = new HashSet<>();
+
+    public ERole getRol() {
+        return rol;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setRol(ERole rol) {
+        this.rol = rol;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public void setPreferences(Set<Preferences> preferences) {
+        this.preferences = preferences;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority(rol.name()));
     }
 
-    public String getLastName() {
-        return lastName;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public String getEmail() {
-        return email;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Integer getEdad() {
-        return edad;
-    }
-
-    public void setEdad(Integer edad) {
-        this.edad = edad;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
     public Set<Preferences> getPreferences(){

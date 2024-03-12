@@ -1,17 +1,11 @@
 package com.kairosgames.kairos_games.controller;
 
 
-import com.kairosgames.kairos_games.model.ERole;
-import com.kairosgames.kairos_games.model.RoleEntity;
-import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.UserRepository;
 import com.kairosgames.kairos_games.service.UserDetailService;
 
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -87,3 +81,5 @@ public class UserEntityController {
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User eliminated");
     }
 } 
+
+}

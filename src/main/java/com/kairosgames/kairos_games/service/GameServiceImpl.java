@@ -24,12 +24,10 @@ public class GameServiceImpl implements GameService {
 
     private GameRepository repository;
     private GameScrapper scrapper;
-    private DestacadosGameScrapper destacados;
 
-    public GameServiceImpl(GameRepository repository, GameScrapper scrapper, DestacadosGameScrapper destacados) {
+    public GameServiceImpl(GameRepository repository, GameScrapper scrapper) {
         this.repository = repository;
         this.scrapper = scrapper;
-        this.destacados = destacados;
     }
 
     @Override

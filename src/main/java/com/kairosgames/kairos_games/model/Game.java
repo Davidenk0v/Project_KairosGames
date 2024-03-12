@@ -78,12 +78,14 @@ public class Game implements Comparator<Game> {
     public Game() {
     }
 
-    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage) {
+    public Game(Long id, String name, BigDecimal actualPrice, String urlImg, String urlPage, String platform, String shop) {
         this.id = id;
         this.name = name;
         this.setActualPrice(actualPrice);
         this.urlImg = urlImg;
         this.urlPage = urlPage;
+        this.platform = platform;
+        this.shop = shop;
     }
 
     public Game(String name, BigDecimal actualPrice, String urlImg, BigDecimal highPrice, String platform,
@@ -200,9 +202,10 @@ public class Game implements Comparator<Game> {
                 '}';
     }
 
+
+
     @Override
-    public int compare(Game arg0, Game arg1) {
-        // TODO Auto-generated method stub
+    public int compare(Game o1, Game o2) {
         return 0;
     }
 }

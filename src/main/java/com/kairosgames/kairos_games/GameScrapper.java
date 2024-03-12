@@ -119,6 +119,7 @@ public class GameScrapper {
 
                     String platform = getPlataformEneba(urlPage);
 
+
                     if (high_priceElement == null) {
                         gamesList.add(new Game(title, new BigDecimal(price), urlImg,new BigDecimal(price), urlPage, platform, "Eneba"));
                     } else {
@@ -138,6 +139,7 @@ public class GameScrapper {
         }
         return gamesList;
     }
+
 
     private String getPlataformEneba(String urlPage) {
         String platform = "";

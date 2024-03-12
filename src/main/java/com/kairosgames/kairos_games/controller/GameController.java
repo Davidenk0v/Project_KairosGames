@@ -15,6 +15,7 @@ import java.util.List;
 public class GameController {
 
     private GameService service;
+    private TrendingService trendingService;
 
     public GameController(GameService service) {
         this.service = service;
@@ -34,6 +35,11 @@ public class GameController {
     @GetMapping("/games")
     public ResponseEntity<List<Game>> getAllGames() {
         return ResponseEntity.ok(this.service.findAll());
+    }
+
+    @GetMapping("/games/trending")
+    public ResponseEntity<Set<String>> getTrendingGames(){
+        return ResponseEntity.ok(this.trendingService.findAll());
     }
 
     @GetMapping("/games/{id}")
