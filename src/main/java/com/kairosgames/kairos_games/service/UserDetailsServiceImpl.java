@@ -4,8 +4,10 @@ import com.kairosgames.kairos_games.exceptions.GameBadRequestException;
 import com.kairosgames.kairos_games.exceptions.GameNotFoundException;
 import com.kairosgames.kairos_games.exceptions.InternalServerErrorException;
 import com.kairosgames.kairos_games.model.Game;
+import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.GameRepository;
+import com.kairosgames.kairos_games.repository.PreferencesRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import io.micrometer.common.lang.NonNull;
@@ -35,16 +37,56 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Autowired
     private GameRepository gameRepository;
+
+    @Autowired
+    private PreferencesRepository preferenceRepository;
     
     @Override
-    public void addGameToPreference(@NonNull Long user_id, @NonNull Long game_id) {
+    public void addGameToList(@NonNull Long user_id, @NonNull Long game_id) {
         try{
-            this.userRepository.addGameToUserList(user_id, game_id);
+            Game game = this.gameRepository.findById(game_id).get();
+            UserEntity user = this.userRepository.findById(user_id).get();
+            user.setUser_games(game);
+        }catch(Exception e){
+            throw new InternalServerErrorException("Error when creating the relationship ");
+        }
+    }
+
+    public void removeGameToList(@NonNull Long user_id, @NonNull Long game_id) {
+        try{
+            Game game = this.gameRepository.findById(game_id).get();
+            UserEntity user = this.userRepository.findById(user_id).get();
+            user.getUser_games().remove(game);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when creating the relationship ");
         }
     }
     
+    
+    @Override
+    public void addPreferenceToUser(Long user_id, Long preference_id) {
+        try{
+            Preferences preference = this.preferenceRepository.findById(preference_id).get();
+            UserEntity user = this.userRepository.findById(user_id).get();
+            user.setPreferences(preference);
+        }catch(Exception e){
+            throw new InternalServerErrorException("Error when creating the relationship ");
+        }
+        
+    }
+
+    @Override
+    public void removePreferenceToUser(Long user_id, Long preference_id) {
+        try{
+            Preferences preference = this.preferenceRepository.findById(preference_id).get();
+            UserEntity user = this.userRepository.findById(user_id).get();
+            user.getPreferences().remove(preference);
+        }catch(Exception e){
+            throw new InternalServerErrorException("Error when creating the relationship ");
+        }
+        
+    }
+
     @Override
     public void deleteAll() {
         this.userRepository.deleteAll();
@@ -81,12 +123,12 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public List<UserEntity> findByUsername(String username) {
+    public UserEntity findByUsername(String username) {
         Objects.requireNonNull(username);
-        if(this.userRepository.findByUsername(username).isEmpty()){
+        if(this.userRepository.findByUsername(username).isPresent()){
             throw new GameNotFoundException("Requested User does not exist");
         }
-        return this.userRepository.findByUsername(username);
+        return this.userRepository.findByUsername(username).get();
     }
 
     @Override
@@ -101,20 +143,13 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Override
     public UserEntity update(Long id, UserEntity game) {
-        // TODO Auto-generated method stub
+        UserEntity old_user = this.userRepository.findById(id)
+            .orElseThrow(()-> new IllegalArgumentException("User does not exist"));
+        
+            old_user.setEmail(null);
+            old_user.setFirstName(null);
+            old_user.setLastName(null);
+            old_user.setPassword(null);
         return null;
     }
-
-
-/*     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("El usuario " +username+" no existe"));
-        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
-                .stream().map(role -> new SimpleGrantedAuthority("ROLE".concat(role.getName().name())))
-                .collect(Collectors.toSet());
-        return new User(userEntity.getUsername(), userEntity.getPassword(),true, true , true ,true, authorities);
-    } */
-
-
 }

@@ -17,15 +17,6 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u WHERE u.username = :username")
-    List<UserEntity> findByUsername(@Param("username") String username);
-    
-    @Query("INSERT INTO user_game (user_id, game_id) VALUES (?1, ?2)")
-    void addGameToUserList(Long user_id, Long game_id);
-    
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM user_game WHERE user_id = ?1 AND game_id = ?2", nativeQuery=true)
-    void removeGameToUserList(Long user_id,Long game_id);
-
+    Optional<UserEntity> findByUsername(@Param("username") String username);
   
 }

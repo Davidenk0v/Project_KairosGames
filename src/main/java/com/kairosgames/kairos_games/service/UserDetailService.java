@@ -14,7 +14,7 @@ public interface UserDetailService {
     // RETRIEVE
     List<UserEntity> findAll();
 
-    List<UserEntity> findByUsername(String username);
+    UserEntity findByUsername(String username);
 
     Optional<UserEntity> findById(Long id);
 
@@ -29,7 +29,11 @@ public interface UserDetailService {
 
     void deleteAll();
 
-    //Metodos de relacion entre tablas
-    void addGameToPreference(Long user_id, Long game_id);
+    //Metodos de relacion usuario ta
+    void addGameToList(Long user_id, Long game_id);
+    void removeGameToList(Long user_id, Long game_id);
+
+    void addPreferenceToUser(Long user_id, Long preference_id);
+    void removePreferenceToUser(Long user_id, Long preference_id);
     
 } 

@@ -55,6 +55,10 @@ public class UserGameTest {
         // Crear un usuario y un juego
 
         usuario.setUsername("Usuario de prueba");
+        usuario.setUsername("UserEntity de prueba");
+         usuario.setEmail("email@gmail.com");
+         usuario.setPassword("1234");
+         usuario.setEdad(44);
         usuario = userRepository.save(usuario);
 
         juego.setName("Game de prueba");
@@ -68,7 +72,7 @@ public class UserGameTest {
         assertEquals(1, userRepository.findById(usuario.getId()).get().getUser_games().size());
 
         // Eliminar la relación entre el usuario y el juego
-        userRepository.removeGameToUserList(usuario.getId(), juego.getId());
+        usuario.getUser_games().remove(juego);
 
         // Verificar que la relación se ha eliminado correctamente
         assertEquals(0, userRepository.findById(usuario.getId()).get().getUser_games().size());

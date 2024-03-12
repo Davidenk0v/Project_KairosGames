@@ -1,11 +1,13 @@
 package com.kairosgames.kairos_games.controller;
 
 
+import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.UserRepository;
 import com.kairosgames.kairos_games.service.UserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -57,15 +59,22 @@ public class UserEntityController {
     }
 
     @GetMapping("/users/name/{name}")
-    public ResponseEntity<List<UserEntity>> findByUserName(@PathVariable String username){
+    public ResponseEntity<UserEntity> findByUserName(@PathVariable String username){
         return ResponseEntity.ok(this.service.findByUsername(username));
     }
 
     @PostMapping("/users/games/add/{user_id}/{game_id}")
     public ResponseEntity addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
-        this.service.addGameToPreference(user_id, game_id);
+        this.service.addGameToList(user_id, game_id);
         
         return ResponseEntity.ok("Añadido");
+    }
+
+    @PostMapping("/users/games/remove/{user_id}/{game_id}")
+    public ResponseEntity removeGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
+        this.service.removeGameToList(user_id, game_id);
+        
+        return ResponseEntity.ok("Borrado");
     }
     
     
@@ -82,4 +91,4 @@ public class UserEntityController {
     }
 } 
 
-}
+
