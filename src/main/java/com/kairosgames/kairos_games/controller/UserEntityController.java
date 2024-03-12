@@ -1,16 +1,15 @@
 package com.kairosgames.kairos_games.controller;
 
 
-import com.kairosgames.kairos_games.repository.UserRepository;
+import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.service.UserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -20,32 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api")
 public class UserEntityController {
 
-/*     @Autowired
-    private PasswordEncoder passwordEncoder; */
-
     @Autowired
     private UserDetailService service; 
 
-    /* @PostMapping("/createUser")
-    public ResponseEntity<?> createUser(){
-
-        Set<RoleEntity> roles = createUserDTO.getRoles().stream()
-                .map(role -> RoleEntity.builder()
-                        .name(ERole.valueOf(role))
-                        .build())
-                .collect(Collectors.toSet());
-
-        UserEntity userEntity = UserEntity.builder()
-                .username(createUserDTO.getUsername())
-                .password(passwordEncoder.encode(createUserDTO.getPassword()))
-                .email(createUserDTO.getEmail())
-                .edad(createUserDTO.getEdad())
-                .roles(roles)
-                .build();
-        userRepository.save(userEntity);
-
-        return ResponseEntity.ok(userEntity);
-    } */
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers(){
         return ResponseEntity.ok(this.service.findAll());
@@ -57,7 +33,7 @@ public class UserEntityController {
     }
 
     @GetMapping("/users/name/{name}")
-    public ResponseEntity<List<UserEntity>> findByUserName(@PathVariable String username){
+    public ResponseEntity<UserEntity> findByUserName(@PathVariable String username){
         return ResponseEntity.ok(this.service.findByUsername(username));
     }
 
@@ -67,13 +43,6 @@ public class UserEntityController {
         
         return ResponseEntity.ok("Añadido");
     }
-    
-    
-    
-
-
-
-
 
     @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@RequestParam String id){
@@ -82,4 +51,3 @@ public class UserEntityController {
     }
 } 
 
-}

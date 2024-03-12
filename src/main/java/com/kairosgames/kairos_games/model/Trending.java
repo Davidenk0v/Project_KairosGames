@@ -1,7 +1,13 @@
 package com.kairosgames.kairos_games.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "trending")
 public class Trending {
@@ -9,23 +15,10 @@ public class Trending {
     @Id
     private Long id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @MapsId
+    @OneToOne()
     @JoinColumn(name = "game_id")
     private Game game;
 
-    public Trending(){}
 
-    public Trending(Long id){
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
 
 }

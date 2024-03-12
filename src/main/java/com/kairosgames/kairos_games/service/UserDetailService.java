@@ -14,7 +14,7 @@ public interface UserDetailService {
     // RETRIEVE
     List<UserEntity> findAll();
 
-    List<UserEntity> findByUsername(String username);
+    UserEntity findByUsername(String username);
 
     Optional<UserEntity> findById(Long id);
 

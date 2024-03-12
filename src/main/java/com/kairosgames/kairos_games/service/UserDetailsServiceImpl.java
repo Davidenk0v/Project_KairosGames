@@ -35,20 +35,6 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Autowired
     private GameRepository gameRepository;
-    
-    @Override
-    public void addGameToPreference(@NonNull Long user_id, @NonNull Long game_id) {
-        try{
-            this.userRepository.addGameToUserList(user_id, game_id);
-        }catch(Exception e){
-            throw new InternalServerErrorException("Error when creating the relationship ");
-        }
-    }
-    
-    @Override
-    public void deleteAll() {
-        this.userRepository.deleteAll();
-    }
 
     @Override
     public void deleteById(Long id) {
@@ -57,6 +43,16 @@ public class UserDetailsServiceImpl implements UserDetailService {
             throw new GameBadRequestException("Requested User with id "+ id +" does not exist");
         }
         
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+
+    @Override
+    public void addGameToPreference(Long user_id, Long game_id) {
+
     }
 
     @Override
@@ -81,12 +77,12 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public List<UserEntity> findByUsername(String username) {
+    public UserEntity findByUsername(String username) {
         Objects.requireNonNull(username);
         if(this.userRepository.findByUsername(username).isEmpty()){
             throw new GameNotFoundException("Requested User does not exist");
         }
-        return this.userRepository.findByUsername(username);
+        return this.userRepository.findByUsername(username).get();
     }
 
     @Override
@@ -105,16 +101,6 @@ public class UserDetailsServiceImpl implements UserDetailService {
         return null;
     }
 
-
-/*     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("El usuario " +username+" no existe"));
-        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
-                .stream().map(role -> new SimpleGrantedAuthority("ROLE".concat(role.getName().name())))
-                .collect(Collectors.toSet());
-        return new User(userEntity.getUsername(), userEntity.getPassword(),true, true , true ,true, authorities);
-    } */
 
 
 }

@@ -1,8 +1,5 @@
 package com.kairosgames.kairos_games.service;
 
-import com.kairosgames.kairos_games.DestacadosGameScrapper;
-import org.hibernate.ObjectNotFoundException;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.kairosgames.kairos_games.GameScrapper;
@@ -13,7 +10,6 @@ import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.repository.GameRepository;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;

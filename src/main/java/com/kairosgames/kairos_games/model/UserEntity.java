@@ -51,8 +51,6 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private ERole rol;
-    @Enumerated(EnumType.STRING)
-    private ERole rol;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_preferences", 
@@ -65,45 +63,6 @@ public class UserEntity implements UserDetails {
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "game_id"))
     private Set<Game> user_games = new HashSet<>();
-
-    public ERole getRol() {
-        return rol;
-    }
-
-    public void setRol(ERole rol) {
-        this.rol = rol;
-    }
-
-    public void setPreferences(Set<Preferences> preferences) {
-        this.preferences = preferences;
-    }
-
-    public Set<Game> getUser_games() {
-        return user_games;
-    }
-
-    public void setUser_games(Game user_games) {
-        this.user_games.add(user_games);
-    }
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_game", 
-    joinColumns = @JoinColumn(name = "user_id"),
-    inverseJoinColumns = @JoinColumn(name = "game_id"))
-    private Set<Game> user_games = new HashSet<>();
-
-    public ERole getRol() {
-        return rol;
-    }
-
-    public void setRol(ERole rol) {
-        this.rol = rol;
-    }
-
-    public void setPreferences(Set<Preferences> preferences) {
-        this.preferences = preferences;
-    }
-
 
 
     @Override
@@ -129,14 +88,6 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Set<Preferences> getPreferences(){
-        return this.preferences;
-    }
-
-    public void setPreferences(Preferences preferences){
-        this.preferences.add(preferences);
     }
 
 }
