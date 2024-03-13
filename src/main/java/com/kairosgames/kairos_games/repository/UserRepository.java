@@ -18,10 +18,4 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     @Query("SELECT u FROM UserEntity u WHERE u.username = :username")
     Optional<UserEntity> findByUsername(@Param("username") String username);
-<<<<<<< HEAD
-  
-=======
-
-
->>>>>>> 6347fca3f17f3e2ddf7558140ab799a2d936d342
 }

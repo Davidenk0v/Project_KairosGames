@@ -1,26 +1,16 @@
 package com.kairosgames.kairos_games.service;
 
-<<<<<<< HEAD
-/* @Service
-public class TrendingService {
-
-    private TrendingRepository repository;
-} */
-=======
 import com.kairosgames.kairos_games.TrendingGameScrapper;
 import com.kairosgames.kairos_games.exceptions.GameNotFoundException;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.Trending;
 import com.kairosgames.kairos_games.repository.GameRepository;
 import com.kairosgames.kairos_games.repository.TrendingRepository;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
-
 @Service
 public class TrendingService {
 
@@ -69,4 +59,3 @@ public class TrendingService {
     }
 
 }
->>>>>>> 6347fca3f17f3e2ddf7558140ab799a2d936d342

@@ -56,13 +56,13 @@ public class TrendingGameScrapper {
         }
         return trendingInstaGames;
     }
-/* 
+
     public Set<String> getAllTrending(){
         Set<String> allTrending = new HashSet<String>();
         allTrending.addAll(getTrendingG2a());
         allTrending.addAll(getTrendingInstaGames());
         return allTrending;
-    } */
+    }
 
 
 }

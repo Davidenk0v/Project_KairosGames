@@ -102,16 +102,6 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public void deleteAll() {
-
-    }
-
-    @Override
-    public void addGameToPreference(Long user_id, Long game_id) {
-
-    }
-
-    @Override
     public List<UserEntity> findAll() {
         if(this.userRepository.findAll().isEmpty()){
             throw new GameNotFoundException("No user found in database");
@@ -162,17 +152,4 @@ public class UserDetailsServiceImpl implements UserDetailService {
             old_user.setPassword(null);
         return null;
     }
-
-
-/*     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
-        UserEntity userEntity = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("El usuario " +username+" no existe"));
-        Collection<? extends GrantedAuthority> authorities = userEntity.getRoles()
-                .stream().map(role -> new SimpleGrantedAuthority("ROLE".concat(role.getName().name())))
-                .collect(Collectors.toSet());
-        return new User(userEntity.getUsername(), userEntity.getPassword(),true, true , true ,true, authorities);
-    } */
-
-
 }
