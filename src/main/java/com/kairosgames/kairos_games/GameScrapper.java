@@ -20,7 +20,6 @@ import java.util.logging.Level;
 
 @Component
 public class GameScrapper {
-    private final Logger logger = LoggerFactory.getLogger(GameScrapper.class);
 
     public GameScrapper() {
     }
@@ -102,9 +101,6 @@ public class GameScrapper {
                 for (Element game : games) {
                     String title = game.select(".YLosEl").text();
                     String price = game.select("span.DTv7Ag span.L5ErLT").text();
-                    logger.error(price);
-                    logger.error(title);
-
                     try{
                         price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
                     }catch(Exception e){

@@ -4,12 +4,14 @@ import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
 //import com.kairosgames.kairos_games.service.TrendingService;
 
+import com.kairosgames.kairos_games.service.TrendingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+import java.util.Set;
 import java.util.Set;
 
 @RestController
@@ -20,8 +22,10 @@ public class GameController {
     private GameService service;
     //private TrendingService trendingService;
 
-    public GameController(GameService service) {
+    public GameController(GameService service, TrendingService trendingService)
+    {
         this.service = service;
+        this.trendingService = trendingService;
     }
 
 
@@ -29,19 +33,16 @@ public class GameController {
     @GetMapping("/")
     public void loadingDatabase() {
         this.service.loadDatabase();
+        this.trendingService.loadDatabase();
     }
 
-    /*
-     * GET http://localhost:8080/api/games
-     */
-    
     @GetMapping("/games")
     public ResponseEntity<List<Game>> getAllGames() {
         return ResponseEntity.ok(this.service.findAll());
     }
 
-/*     @GetMapping("/games/trending")
-    public ResponseEntity<Set<String>> getTrendingGames(){
+    @GetMapping("/games/trending")
+    public ResponseEntity<List<Game>> getTrendingGames(){
         return ResponseEntity.ok(this.trendingService.findAll());
     } */
 

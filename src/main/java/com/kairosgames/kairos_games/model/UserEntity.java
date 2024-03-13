@@ -51,7 +51,8 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private ERole rol;
-
+    @Enumerated(EnumType.STRING)
+    private ERole rol;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_preferences", 
@@ -108,14 +109,6 @@ public class UserEntity implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public Set<Preferences> getPreferences(){
-        return this.preferences;
-    }
-
-    public void setPreferences(Preferences preferences){
-        this.preferences.add(preferences);
     }
 
 }

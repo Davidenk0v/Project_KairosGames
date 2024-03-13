@@ -13,7 +13,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.Set;
 
 @Component
@@ -56,9 +58,9 @@ public class TrendingGameScrapper {
     }
 /* 
     public Set<String> getAllTrending(){
-        Set<String> allTrending = new HashSet<>();
-        allTrending.add(getTrendingG2a());
-        allTrending.add(getTrendingInstaGames());
+        Set<String> allTrending = new HashSet<String>();
+        allTrending.addAll(getTrendingG2a());
+        allTrending.addAll(getTrendingInstaGames());
         return allTrending;
     } */
 
