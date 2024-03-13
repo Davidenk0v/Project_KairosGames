@@ -10,6 +10,8 @@ import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.repository.GameRepository;
 
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Objects;
@@ -57,6 +59,14 @@ public class GameServiceImpl implements GameService {
             throw new GameNotFoundException("No games found in database");
         }
         return this.repository.findAll();
+    }
+
+    
+
+    @Override
+    public Page<Game> findAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
+        
     }
 
     @Override

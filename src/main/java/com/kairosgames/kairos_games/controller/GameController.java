@@ -2,15 +2,18 @@ package com.kairosgames.kairos_games.controller;
 
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
-//import com.kairosgames.kairos_games.service.TrendingService;
 
 import com.kairosgames.kairos_games.service.TrendingService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.List;
+
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
@@ -34,11 +37,20 @@ public class GameController {
         this.trendingService.loadDatabase();
     }
 
-    @GetMapping("/games")
+/*     @GetMapping("/games/null")
     public ResponseEntity<List<Game>> getAllGames() {
         return ResponseEntity.ok(this.service.findAll());
-    }
+    } */
 
+    /* http://localhost:8080/api/games?page=2 */
+    @GetMapping("/games")
+    public ResponseEntity<Page<Game>> getAllPage(Pageable pageable) {
+        pageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+         Page<Game> gamePage = this.service.findAll(pageable);
+        return ResponseEntity.ok(gamePage);
+    }
+    
+    
     @GetMapping("/games/trending")
     public ResponseEntity<List<Game>> getTrendingGames(){
         return ResponseEntity.ok(this.trendingService.findAll());
