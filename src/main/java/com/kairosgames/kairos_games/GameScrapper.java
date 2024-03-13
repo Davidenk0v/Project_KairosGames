@@ -75,8 +75,12 @@ public class GameScrapper {
                 Element data = html.selectFirst(".data");
                 String name = data.select(".game-title").text();
                 String actualPrice = data.select(".total").text();
+
+                if(actualPrice.isEmpty()) actualPrice = "0€";
                 actualPrice = actualPrice.substring(0, actualPrice.length() - 1);
                 String highPrice = data.select(".retail").text();
+
+                if(highPrice.isEmpty()) highPrice = "0€";
                 highPrice = highPrice.substring(0, highPrice.length() - 1);
                 platformsList.add(data.select("#platforms-choices > option").text());
                 String platform = String.join(",", platformsList);
@@ -88,7 +92,9 @@ public class GameScrapper {
             throw new InternalServerErrorException("Error while loading data from Instagames", e);
         }
         return gamesList;
+    
     }
+
 
     public List<Game> getEnebaGames() {
 
@@ -101,18 +107,14 @@ public class GameScrapper {
                 for (Element game : games) {
                     String title = game.select(".YLosEl").text();
                     String price = game.select("span.DTv7Ag span.L5ErLT").text();
-                    try{
-                        price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
-                    }catch(Exception e){
-                        price = "0";
-                    }finally{
+                    if(price.isEmpty()) price = "0€";
+                    price = (price.substring(0, price.length() - 1).replace(",", ".")).trim();
 
                     Element imgElement = game.select("img").first();
                     String urlImg = imgElement.attr("src");
                     Element elementPage = game.select("a.oSVLlh").first();
                     String urlPage = "https://www.eneba.com" + elementPage.attr("href");
                     Element high_priceElement = game.select("div.iqjN1x span.L5ErLT").first();
-
                     String platform = getPlataformEneba(urlPage);
 
 
@@ -120,13 +122,12 @@ public class GameScrapper {
                         gamesList.add(new Game(title, new BigDecimal(price), urlImg,new BigDecimal(price), urlPage, platform, "Eneba"));
                     } else {
                         String high_price = high_priceElement.text();
+                        if(high_price.isEmpty()) high_price = "0€";
                         high_price = (high_price.substring(0, high_price.length() - 1).replace(",", ".")).trim();
                         gamesList.add(
                                 new Game(title, new BigDecimal(price), urlImg, new BigDecimal(high_price),
-                                        urlPage, platform, "Eneba"));
+                                        platform, urlPage, "Eneba"));
                     }
-                }
-
                 }
             }
 
