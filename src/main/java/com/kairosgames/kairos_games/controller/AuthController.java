@@ -1,6 +1,7 @@
 package com.kairosgames.kairos_games.controller;
 
 
+import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.model.auth.RegisterRequest;
