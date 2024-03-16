@@ -7,17 +7,21 @@ import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.model.auth.RegisterRequest;
 import com.kairosgames.kairos_games.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
+    private UserEntity userEntity;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -26,9 +30,11 @@ public class AuthService {
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
         UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
-        return AuthResponse.builder()
-                .token(token)
-                .build();
+        String userName = request.getUsername();
+        userEntity = userRepository.findByUsername(userName).get();
+        String rol = userEntity.getRol().name();
+        Long id = userEntity.getId();
+        return new AuthResponse(token, rol, id);
     }
 
     public AuthResponse register(RegisterRequest request){
@@ -48,4 +54,5 @@ public class AuthService {
                 .token(jwtService.getToken(user))
                 .build();
     }
+
 }

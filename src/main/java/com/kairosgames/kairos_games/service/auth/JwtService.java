@@ -1,6 +1,7 @@
 package com.kairosgames.kairos_games.service.auth;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -8,6 +9,7 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import com.kairosgames.kairos_games.exceptions.ForbiddenException;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.service.UserDetailService;
 import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
@@ -27,7 +29,7 @@ public class JwtService {
         return getToken(new HashMap<>(), user);
     }
 
-/*     private String getToken(Map<String, Object> extraClaims, UserDetails user){
+    private String getToken(Map<String, Object> extraClaims, UserDetails user){
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
@@ -36,13 +38,6 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
                 .signWith(getKey(), SignatureAlgorithm.HS256)
                 .compact();
-    } */
-    private String getToken(Map<String, Object> extraClaims, UserDetails user){
-        UserDetailService service = new UserDetailsServiceImpl();
-        UserEntity userTest = service.findByUsername(user.getUsername());
-        return Jwts
-                .builder()
-                .claim("role")
     }
 
     private Key getKey(){
