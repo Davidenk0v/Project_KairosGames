@@ -13,20 +13,12 @@ import com.kairosgames.kairos_games.repository.UserRepository;
 import io.micrometer.common.lang.NonNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
-/* import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException; */
+
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailService {
@@ -64,7 +56,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
     
     
     @Override
-    public void addPreferenceToUser(Long user_id, Long preference_id) {
+    public void addPreferenceToUser(@NonNull Long user_id,@NonNull Long preference_id) {
         try{
             Preferences preference = this.preferenceRepository.findById(preference_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
@@ -76,7 +68,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public void removePreferenceToUser(Long user_id, Long preference_id) {
+    public void removePreferenceToUser(@NonNull Long user_id,@NonNull  Long preference_id) {
         try{
             Preferences preference = this.preferenceRepository.findById(preference_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
@@ -142,7 +134,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public UserEntity update(Long id, UserEntity game) {
+    public UserEntity update(@NonNull Long id,@NonNull  UserEntity game) {
         UserEntity old_user = this.userRepository.findById(id)
             .orElseThrow(()-> new IllegalArgumentException("User does not exist"));
         

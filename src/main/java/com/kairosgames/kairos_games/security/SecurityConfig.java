@@ -30,8 +30,16 @@ public class SecurityConfig{
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                .csrf(csrf ->
-                        csrf.disable()
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth ->{
+                    auth
+                            .requestMatchers("/auth/**", "/api/games", "/api/games/trending").permitAll()
+                            .requestMatchers("/api/users", "/api").hasRole("ADMIN")
+                            .anyRequest().authenticated();
+                })
+                .sessionManagement(sessionManager->
+                        sessionManager
+                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                         )
                 .authorizeHttpRequests(authRequest -> 
                         authRequest

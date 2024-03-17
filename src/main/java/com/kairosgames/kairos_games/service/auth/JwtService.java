@@ -1,8 +1,15 @@
 package com.kairosgames.kairos_games.service.auth;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
+
+import com.kairosgames.kairos_games.model.UserEntity;
+import com.kairosgames.kairos_games.repository.UserRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -26,39 +33,36 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 
 @Service
-public class JwtService{
+public class JwtService {
 
-@Value("classpath:jwtKeys/private_key.pem")
-private Resource privateKeResource;
+    private static final String SECRET_KEY="kdmvp39q0UNgrPTcUp6g6mlK5sGsYjPmOo6XGQ2GZcUVbOGXY7cBXZMxZw3Zxm";
 
-@Value("classpath:jwtKeys/public_key.pem")
-private Resource publicKeyResource;
+    @Autowired
+    private UserRepository repository;
 
-public String generateJWT(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException{
-    PrivateKey privateKey = loadPrivateKey(privateKeResource);
+    public String getToken(UserDetails user){
+        return getToken(new HashMap<>(), user);
+    }
 
-    JWSSigner signer = new RSASSASigner(privateKey);
+    private String getToken(Map<String, Object> extraClaims, UserDetails user){
+        UserEntity userEntity = repository.findByUsername(user.getUsername()).get();
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userEntity.getRol().toString())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
+                .signWith(getKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 
-    Date now = new Date();
-    JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-        .subject(username)
-        .issueTime(now)
-        .expirationTime(new Date(now.getTime() + 14400000))
-        .build();
-    SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
-    signedJWT.sign(signer);
+    private Key getKey(){
+        byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
 
-    return signedJWT.serialize();
-}
-
-public JWTClaimsSet parseJWT(String jwt) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException, ParseException{
-    PublicKey publicKey = loadPublicKey(publicKeyResource);
-
-    SignedJWT signedJWT = SignedJWT.parse(jwt);
-    JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey)publicKey);
-
-    if(!signedJWT.verify(verifier)){
-        throw new JOSEException("Invalid signature");
+    public String getUsernameFromToken(String token){
+        return getClaim(token, Claims::getSubject);
     }
 
     JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
