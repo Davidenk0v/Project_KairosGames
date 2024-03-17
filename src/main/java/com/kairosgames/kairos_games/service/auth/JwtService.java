@@ -1,79 +1,98 @@
 package com.kairosgames.kairos_games.service.auth;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.io.Decoders;
-import io.jsonwebtoken.security.Keys;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.kairosgames.kairos_games.exceptions.ForbiddenException;
-import com.kairosgames.kairos_games.model.UserEntity;
-import com.kairosgames.kairos_games.service.UserDetailService;
-import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
-
-import java.security.Key;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.PublicKey;
+import java.security.interfaces.RSAPublicKey;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.text.ParseException;
+import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+
+import com.nimbusds.jose.*;
+import com.nimbusds.jose.crypto.RSASSASigner;
+import com.nimbusds.jose.crypto.RSASSAVerifier;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
 
 @Service
-public class JwtService {
+public class JwtService{
 
-    private static final String SECRET_KEY="kdmvp39q0UNgrPTcUp6g6mlK5sGsYjPmOo6XGQ2GZcUVbOGXY7cBXZMxZw3Zxm";
+@Value("classpath:jwtKeys/private_key.pem")
+private Resource privateKeResource;
 
-    public String getToken(UserDetails user){
-        return getToken(new HashMap<>(), user);
+@Value("classpath:jwtKeys/public_key.pem")
+private Resource publicKeyResource;
+
+public String generateJWT(String username) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException{
+    PrivateKey privateKey = loadPrivateKey(privateKeResource);
+
+    JWSSigner signer = new RSASSASigner(privateKey);
+
+    Date now = new Date();
+    JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+        .subject(username)
+        .issueTime(now)
+        .expirationTime(new Date(now.getTime() + 14400000))
+        .build();
+    SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
+    signedJWT.sign(signer);
+
+    return signedJWT.serialize();
+}
+
+public JWTClaimsSet parseJWT(String jwt) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException, ParseException{
+    PublicKey publicKey = loadPublicKey(publicKeyResource);
+
+    SignedJWT signedJWT = SignedJWT.parse(jwt);
+    JWSVerifier verifier = new RSASSAVerifier((RSAPublicKey)publicKey);
+
+    if(!signedJWT.verify(verifier)){
+        throw new JOSEException("Invalid signature");
     }
 
-    private String getToken(Map<String, Object> extraClaims, UserDetails user){
-        return Jwts
-                .builder()
-                .setClaims(extraClaims)
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
-                .signWith(getKey(), SignatureAlgorithm.HS256)
-                .compact();
+    JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+
+    if(claimsSet.getExpirationTime().before(new Date())){
+        throw new JOSEException("Expired token");
     }
 
-    private Key getKey(){
-        byte[] keyBytes = Decoders.BASE64URL.decode(SECRET_KEY);
-        return Keys.hmacShaKeyFor(keyBytes);
-    }
+    return claimsSet;
 
-    public String getUsernameFromToken(String token){
-        return getClaim(token, Claims::getSubject);
-    }
+}
 
+private PrivateKey loadPrivateKey(Resource resource) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
+    String privateKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
+        .replace("-----BEGIN RSA PRIVATE KEY-----", "")
+        .replace("-----END RSA PRIVATE KEY-----", "")
+        .replaceAll("\\s", "");
+    byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
+    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
-    public boolean isTokenValid(String token, UserDetails userDetails){
-        final String username = getUsernameFromToken(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-    }
+    return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(decodedKey));
+}
 
-    private Claims getAllClaims(String token){
-        return  Jwts
-                .parser()
-                .setSigningKey(getKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
+private PublicKey loadPublicKey(Resource resource) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+    byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
+    String publicKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
+        .replace("-----BEGIN PUBLIC KEY-----", "")
+        .replace("-----END PUBLIC KEY-----", "")
+        .replaceAll("\\s", "");
+    byte[] decodedKey = Base64.getDecoder().decode(publicKeyPEM);
+    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
-    public <T> T getClaim(String token, Function<Claims, T> claimsResolver){
-        final Claims claims = getAllClaims(token);
-        return claimsResolver.apply(claims);
-    }
+    return keyFactory.generatePublic(new PKCS8EncodedKeySpec(decodedKey));
+}
 
-    private Date getExpiration(String token){
-        return getClaim(token, Claims::getExpiration);
-    }
-
-    private boolean isTokenExpired(String token){
-        return getExpiration(token).before(new Date());
-    }
 }

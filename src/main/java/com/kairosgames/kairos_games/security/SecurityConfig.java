@@ -2,46 +2,58 @@ package com.kairosgames.kairos_games.security;
 
 
 import com.kairosgames.kairos_games.Jwt.JwtAuthenticationFilter;
-import lombok.RequiredArgsConstructor;
+import com.kairosgames.kairos_games.service.auth.JwtService;
+
+import jakarta.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
-public class SecurityConfig extends WebSecurityConfiguration{
-
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
-    private final AuthenticationProvider authProvider;
+@EnableMethodSecurity(securedEnabled = true)
+public class SecurityConfig{
+    @Autowired
+    private JwtService jwtService;
 
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth ->{
-                    auth
-                            .requestMatchers("/auth/**", "/api/games", "/api/", "/api/games/trending").permitAll()
-                            .anyRequest().authenticated();
-                })
-                .sessionManagement(sessionManager->
-                        sessionManager
-                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf(csrf ->
+                        csrf.disable()
                         )
-                .authenticationProvider(authProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
+                .authorizeHttpRequests(authRequest -> 
+                        authRequest
+                                .requestMatchers("/auth/**").permitAll()
+                                .anyRequest().authenticated()
+                        )
+                        .sessionManagement(sessionManager -> 
+                                sessionManager
+                                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                                )
+                        .addFilterBefore(new JwtAuthenticationFilter(jwtService), 
+                                UsernamePasswordAuthenticationFilter.class)
+                        .exceptionHandling(exceptionHandling ->
+                                exceptionHandling
+                                        .authenticationEntryPoint((request, response, authException) -> {
+                                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                                        }))
+                                .build();                  
     }
-
-
-
+    
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
+    }
 }
