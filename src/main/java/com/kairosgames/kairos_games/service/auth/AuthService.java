@@ -7,14 +7,13 @@ import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.model.auth.RegisterRequest;
 import com.kairosgames.kairos_games.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.net.http.HttpRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +31,7 @@ public class AuthService {
         String token = jwtService.getToken(user);
         String userName = request.getUsername();
         userEntity = userRepository.findByUsername(userName).get();
-        String rol = userEntity.getRol().name();
-        return new AuthResponse(token, rol);
+        return new AuthResponse(token);
     }
 
     public AuthResponse register(RegisterRequest request){

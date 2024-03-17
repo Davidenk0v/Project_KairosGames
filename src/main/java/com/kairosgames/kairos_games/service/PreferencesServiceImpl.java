@@ -2,6 +2,8 @@ package com.kairosgames.kairos_games.service;
 
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.repository.PreferencesRepository;
+
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,16 +20,16 @@ public class PreferencesServiceImpl {
 
     public List<Preferences> findAll(){return this.repository.findAll();}
 
-    public Optional<Preferences> findById(Long id){
+    public Optional<Preferences> findById(@NonNull Long id){
         return this.repository.findById(id);
     }
 
-    public Preferences save (Preferences preferences){
+    public Preferences save (@NonNull Preferences preferences){
         this.repository.save(preferences);
         return preferences;
     }
 
-    public void deleteById(Long id){
+    public void deleteById(@NonNull Long id){
         this.repository.deleteById(id);
     }
 

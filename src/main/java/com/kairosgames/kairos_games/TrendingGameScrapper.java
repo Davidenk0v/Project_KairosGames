@@ -1,22 +1,17 @@
 package com.kairosgames.kairos_games;
 
-import com.kairosgames.kairos_games.model.Game;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.Set;
+
 
 @Component
 public class TrendingGameScrapper {
