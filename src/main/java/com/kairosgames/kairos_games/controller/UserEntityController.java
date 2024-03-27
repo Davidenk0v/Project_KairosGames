@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RequestMapping("/api")
 public class UserEntityController {
 
@@ -42,7 +42,7 @@ public class UserEntityController {
     public ResponseEntity<String> addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
         this.service.addGameToList(user_id, game_id);
         
-        return ResponseEntity.ok("Añadido");
+        return ResponseEntity.status(HttpStatus.CREATED).body("Añadido");
     }
 
     @DeleteMapping("/users/{id}")

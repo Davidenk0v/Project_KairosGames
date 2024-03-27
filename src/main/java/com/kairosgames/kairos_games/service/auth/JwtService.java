@@ -5,13 +5,13 @@ import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.kairosgames.kairos_games.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
-import com.kairosgames.kairos_games.repository.UserRepository;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -47,7 +47,6 @@ public class JwtService implements IJwtService{
         JWSSigner signer = new RSASSASigner(privateKey);
 
         Date now = new Date();
-
         String rol = repository.findById(userId).get().getRol().name();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
                 .subject(userId.toString())

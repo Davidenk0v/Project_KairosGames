@@ -1,19 +1,16 @@
 package com.kairosgames.kairos_games.security;
 
-
 import com.kairosgames.kairos_games.Jwt.JwtAuthenticationFilter;
 import com.kairosgames.kairos_games.service.auth.JwtService;
+
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -40,6 +37,7 @@ public class SecurityConfig {
                         auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/api/games").permitAll()
+                        .requestMatchers("/api/games/filter/**").permitAll()
                         .requestMatchers("/api/games/trending").permitAll()
                         .requestMatchers("/api/users").hasRole("ADMIN")
                         .anyRequest().authenticated())
@@ -52,8 +50,10 @@ public class SecurityConfig {
                         exceptionHandling
                                 .authenticationEntryPoint((request, response, authException) -> {
                                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+                                    
                                 }))
                 .build();
+                
     }
 
     @Bean

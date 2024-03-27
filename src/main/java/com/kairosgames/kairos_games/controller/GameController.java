@@ -68,7 +68,6 @@ public class GameController {
         }
 
 
-    //ESTE METODO SE DEBE ELIMINAR SOLO PARA TESTEAR
     @GetMapping("/games/name/{name}")
     public ResponseEntity<List<Game>> findByname(@PathVariable String name) {
         return ResponseEntity.ok(service.findByname(name));
@@ -77,7 +76,7 @@ public class GameController {
 
     @PostMapping("/games")
     public ResponseEntity<Game> create(@RequestBody Game game) {
-        return ResponseEntity.ok(this.service.save(game));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.save(game));
     }
 
     @DeleteMapping("/games/{id}")

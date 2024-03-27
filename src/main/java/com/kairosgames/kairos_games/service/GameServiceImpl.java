@@ -12,6 +12,7 @@ import com.kairosgames.kairos_games.repository.GameRepository;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import java.util.List;
 import java.util.Objects;
@@ -64,7 +65,7 @@ public class GameServiceImpl implements GameService {
     
 
     @Override
-    public Page<Game> findAll(Pageable pageable) {
+    public Page<Game> findAll(@NonNull Pageable pageable) {
         return this.repository.findAll(pageable);
         
     }

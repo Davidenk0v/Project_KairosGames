@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.NonNull;
 
 import com.kairosgames.kairos_games.model.Game;
 
@@ -14,7 +15,7 @@ public interface GameService {
 
     // RETRIEVE
     List<Game> findAll();
-    Page<Game> findAll(Pageable pageable);
+    Page<Game> findAll(@NonNull Pageable pageable);
 
     List<Game> findByname(String name);
     List<Game> filterByname(String name);
