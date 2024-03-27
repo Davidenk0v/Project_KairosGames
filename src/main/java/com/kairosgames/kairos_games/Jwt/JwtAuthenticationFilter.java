@@ -3,36 +3,30 @@ package com.kairosgames.kairos_games.Jwt;
 import com.kairosgames.kairos_games.service.auth.JwtService;
 import com.nimbusds.jose.JOSEException;
 import com.nimbusds.jwt.JWTClaimsSet;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-
-import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.springframework.http.HttpHeaders;
 import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 import java.text.ParseException;
-import java.util.Collection;
 import java.util.Collections;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    private final JwtService jwtService;
+    JwtService jwtService;
 
 
     public JwtAuthenticationFilter(JwtService jwtService) {
@@ -61,6 +55,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+}
 
 //        if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
 //            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -75,5 +71,4 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 //
 //
 //        }
-    }
-}
+

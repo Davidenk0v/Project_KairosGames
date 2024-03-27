@@ -1,22 +1,16 @@
 package com.kairosgames.kairos_games.service.auth;
 
-import com.kairosgames.kairos_games.model.ERole;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import java.io.IOException;
@@ -30,9 +24,6 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
 
 @Service
 public class JwtService implements IJwtService{
@@ -43,6 +34,7 @@ public class JwtService implements IJwtService{
 
     @Value("classpath:jwtKeys/public_key.pem")
     private Resource publicKeyResource;
+
     @Autowired
     private UserRepository repository;
 

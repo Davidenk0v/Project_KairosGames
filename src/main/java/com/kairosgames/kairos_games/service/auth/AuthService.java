@@ -4,17 +4,11 @@ import com.kairosgames.kairos_games.model.ERole;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
-import com.kairosgames.kairos_games.model.auth.RegisterRequest;
 import com.kairosgames.kairos_games.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -36,6 +30,9 @@ public class AuthService implements IAuthService{
     @Override
     public HashMap<String, String> login(LoginRequest request) throws Exception {
         try{
+            java.security.Security.addProvider(
+                new org.bouncycastle.jce.provider.BouncyCastleProvider()
+                );
             HashMap<String, String> jwt = new HashMap<>();
                 Optional<UserEntity> userEntity = userRepository.findByUsername(request.getUsername());
                 if(userEntity.isEmpty()){
@@ -62,10 +59,14 @@ public class AuthService implements IAuthService{
         return encoder.matches(enteredPassword, storedPassword);
     }
 
+    
     //REGISTER
     public AuthResponse register(UserEntity request) throws Exception {
         try{
-            Optional optional = userRepository.findByUsername(request.getUsername());
+            java.security.Security.addProvider(
+                new org.bouncycastle.jce.provider.BouncyCastleProvider()
+                );
+            Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
             if(!optional.isEmpty()){
                 throw new UsernameNotFoundException("User already exists!");
             }
@@ -80,7 +81,6 @@ public class AuthService implements IAuthService{
                     .rol(ERole.USER)
                     .build();
             userRepository.save(user);
-
             return AuthResponse.builder()
                     .token(jwtService.generateJWT(user.getId()))
                     .build();

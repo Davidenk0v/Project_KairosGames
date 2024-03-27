@@ -11,7 +11,7 @@ public class CorsConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry){
         registry.addMapping("/api/games")
-            .allowedOrigins("http://localhost:5173")
+            .allowedOrigins("*")
             .allowedMethods("GET")
             .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
             .allowCredentials(false)
@@ -20,12 +20,12 @@ public class CorsConfig implements WebMvcConfigurer{
         registry.addMapping("/auth/**")
             .allowedOrigins("*")
             .allowedMethods("GET", "POST")
-            .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
+            .allowedHeaders("*")
             .allowCredentials(false)
             .maxAge(3600);
 
         registry.addMapping("/api/users/**")
-            .allowedOrigins("http://localhost:5173")
+            .allowedOrigins("*")
             .allowedMethods("GET")
             .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
             .allowCredentials(true)

@@ -27,15 +27,20 @@ public class SecurityConfig {
 
     @Autowired
     private JwtService jwtService;
+        
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
         return httpSecurity
-                .csrf(AbstractHttpConfigurer::disable
+                .csrf(csrf->
+                        csrf.disable()
                 )
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/api/games", "/api/games/trending").permitAll()
+                .authorizeHttpRequests(auth -> 
+                        auth
+                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/api/games").permitAll()
+                        .requestMatchers("/api/games/trending").permitAll()
                         .requestMatchers("/api/users").hasRole("ADMIN")
                         .anyRequest().authenticated())
                 .sessionManagement(sessionManager->
