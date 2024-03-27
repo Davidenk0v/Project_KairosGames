@@ -79,6 +79,15 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public List<Game> filterByname(String name) {
+        Objects.requireNonNull(name);
+                if (this.repository.filterByName(name).isEmpty()){
+            throw new GameNotFoundException("Requested Game does not exist");
+        }
+        return this.repository.filterByName(name);
+    }
+
+    @Override
     public Optional<Game> findById(Long id) {
         Objects.requireNonNull(id);
         if(id <= 0){

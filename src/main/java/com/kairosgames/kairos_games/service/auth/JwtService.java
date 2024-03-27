@@ -5,32 +5,19 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.interfaces.RSAPublicKey;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.text.ParseException;
-import java.util.Base64;
+import java.security.Key;
 import java.util.Date;
-
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.crypto.RSASSAVerifier;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -65,38 +52,30 @@ public class JwtService {
         return getClaim(token, Claims::getSubject);
     }
 
-    JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
-    if(claimsSet.getExpirationTime().before(new Date())){
-        throw new JOSEException("Expired token");
+    public boolean isTokenValid(String token, UserDetails userDetails){
+        final String username = getUsernameFromToken(token);
+        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
-    return claimsSet;
+    private Claims getAllClaims(String token){
+        return  Jwts
+                .parser()
+                .setSigningKey(getKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
 
-}
+    public <T> T getClaim(String token, Function<Claims, T> claimsResolver){
+        final Claims claims = getAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
 
-private PrivateKey loadPrivateKey(Resource resource) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-    byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
-    String privateKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
-        .replace("-----BEGIN RSA PRIVATE KEY-----", "")
-        .replace("-----END RSA PRIVATE KEY-----", "")
-        .replaceAll("\\s", "");
-    byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
-    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+    private Date getExpiration(String token){
+        return getClaim(token, Claims::getExpiration);
+    }
 
-    return keyFactory.generatePrivate(new PKCS8EncodedKeySpec(decodedKey));
-}
-
-private PublicKey loadPublicKey(Resource resource) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-    byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
-    String publicKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
-        .replace("-----BEGIN PUBLIC KEY-----", "")
-        .replace("-----END PUBLIC KEY-----", "")
-        .replaceAll("\\s", "");
-    byte[] decodedKey = Base64.getDecoder().decode(publicKeyPEM);
-    KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-    return keyFactory.generatePublic(new PKCS8EncodedKeySpec(decodedKey));
-}
-
+    private boolean isTokenExpired(String token){
+        return getExpiration(token).before(new Date());
+    }
 }

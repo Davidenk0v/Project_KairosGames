@@ -49,6 +49,12 @@ public class GameController {
          Page<Game> gamePage = this.service.findAll(pageable);
         return ResponseEntity.ok(gamePage);
     }
+
+    @GetMapping("/games/filter/{name}")
+    public ResponseEntity<List<Game>> filterByName(@PathVariable String name) {
+         List<Game> games = this.service.filterByname(name);
+        return ResponseEntity.ok(games);
+    }
     
     
     @GetMapping("/games/trending")

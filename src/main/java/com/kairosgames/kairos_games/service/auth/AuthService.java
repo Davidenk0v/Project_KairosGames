@@ -6,8 +6,6 @@ import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.model.auth.RegisterRequest;
 import com.kairosgames.kairos_games.repository.UserRepository;
-
-
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,14 +19,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthService {
 
-    @Autowired
     private final UserRepository userRepository;
-    private UserEntity userEntity;
     private final JwtService jwtService;
-    
-    @Autowired
     private final PasswordEncoder passwordEncoder;
-    @Autowired
     private final AuthenticationManager authenticationManager;
 
     public AuthResponse login(LoginRequest request){
@@ -36,13 +29,12 @@ public class AuthService {
         UserDetails user = userRepository.findByUsername(request.getUsername()).orElseThrow();
         String token = jwtService.getToken(user);
         String userName = request.getUsername();
-        userEntity = userRepository.findByUsername(userName).get();
+        UserEntity userEntity = userRepository.findByUsername(userName).get();
         return new AuthResponse(token);
     }
 
-    public AuthResponse register(RegisterRequest request) throws Exception{
-        try{
-            UserEntity user = UserEntity.builder()
+    public AuthResponse register(RegisterRequest request){
+        UserEntity user = UserEntity.builder()
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .firstName(request.getFirstName())
@@ -58,9 +50,5 @@ public class AuthService {
                 .token(jwtService.getToken(user))
 
                 .build();
-        }catch(Exception e){
-            throw new Exception(e);
-        }
     }
-
 }

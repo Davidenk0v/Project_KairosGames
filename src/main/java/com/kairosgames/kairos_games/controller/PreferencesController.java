@@ -1,6 +1,5 @@
 package com.kairosgames.kairos_games.controller;
 
-import com.kairosgames.kairos_games.service.PreferencesServiceImpl;
 import com.kairosgames.kairos_games.service.UserDetailService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,14 +21,14 @@ public class PreferencesController {
     
 
     @PostMapping("/preferences/add/{user_id}/{preference_id}")
-    public ResponseEntity addGameToUser(@RequestBody Long user_id, @RequestBody Long game_id) {
+    public ResponseEntity<String> addGameToUser(@RequestBody Long user_id, @RequestBody Long game_id) {
         this.service.addPreferenceToUser(user_id, game_id);
         
         return ResponseEntity.ok("Añadido");
     }
 
     @PostMapping("/preferences/remove/{user_id}/{preference_id}")
-    public ResponseEntity removeGameToUser(@RequestBody Long user_id, @RequestBody Long game_id) {
+    public ResponseEntity<String> removeGameToUser(@RequestBody Long user_id, @RequestBody Long game_id) {
         this.service.removePreferenceToUser(user_id, game_id);
         
         return ResponseEntity.ok("Borrado");

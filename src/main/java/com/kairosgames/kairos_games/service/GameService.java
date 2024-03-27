@@ -17,6 +17,7 @@ public interface GameService {
     Page<Game> findAll(Pageable pageable);
 
     List<Game> findByname(String name);
+    List<Game> filterByname(String name);
 
     Optional<Game> findById(Long id);
 

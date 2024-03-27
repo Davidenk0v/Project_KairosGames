@@ -13,4 +13,8 @@ import java.util.List;
 public interface GameRepository extends JpaRepository<Game, Long> {
     @Query("SELECT g FROM Game g WHERE g.name = :name")
     List<Game> findByName(@Param("name") String name);
+
+    //FILTRADO POR NOMBRE
+    @Query("SELECT g FROM Game g WHERE g.name LIKE :name%")
+    List<Game> filterByName(@Param("name") String name);
 }

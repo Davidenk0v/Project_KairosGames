@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 
@@ -41,7 +39,7 @@ public class UserEntityController {
     }
 
     @PostMapping("/users/games/add/{user_id}/{game_id}")
-    public ResponseEntity addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
+    public ResponseEntity<String> addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
         this.service.addGameToList(user_id, game_id);
         
         return ResponseEntity.ok("Añadido");

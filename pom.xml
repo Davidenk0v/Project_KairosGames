@@ -93,20 +93,10 @@
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-    		<groupId>com.nimbusds</groupId>
-    		<artifactId>nimbus-jose-jwt</artifactId>
-    		<version>9.38-rc3</version>
-		</dependency>
-		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-impl</artifactId>
 			<version>0.12.5</version>
 			<scope>runtime</scope>
-		</dependency>
-		<dependency>
-    		<groupId>io.jsonwebtoken</groupId>
-    		<artifactId>jjwt</artifactId>
-    		<version>0.9.1</version>
 		</dependency>
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>

@@ -1,7 +1,5 @@
 package com.kairosgames.kairos_games.model.auth;
 
-import jakarta.persistence.Column;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
