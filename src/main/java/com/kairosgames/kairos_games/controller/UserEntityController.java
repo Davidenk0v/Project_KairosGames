@@ -25,7 +25,7 @@ public class UserEntityController {
 
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers(){
-        return ResponseEntity.ok(this.service.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.findAll());
     }
 
     @GetMapping("/users/{id}")
