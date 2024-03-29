@@ -1,7 +1,5 @@
 package com.kairosgames.kairos_games.service.auth;
 
-import com.kairosgames.kairos_games.model.ERole;
-import com.kairosgames.kairos_games.model.RoleEntity;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -27,8 +25,6 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Service
 public class JwtService implements IJwtService{

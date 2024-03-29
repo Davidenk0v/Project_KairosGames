@@ -57,13 +57,14 @@ public class SecurityConfig {
                        sessionManager
                                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                )
-               .authorizeHttpRequests(auth ->
-                       auth
-                               .requestMatchers("/auth/**").permitAll()
-                               .requestMatchers("/api/games").permitAll()
-                               .requestMatchers("/api/games/filter/**").permitAll()
-                               .requestMatchers("/api/games/trending").permitAll()
-                               .anyRequest().authenticated())
+            //    .authorizeHttpRequests(auth ->
+            //            auth
+            //                    .requestMatchers("/api").permitAll()
+            //                    .requestMatchers("/auth/**").permitAll()
+            //                    .requestMatchers("/api/games").permitAll()
+            //                    .requestMatchers("/api/games/filter/**").permitAll()
+            //                    .requestMatchers("/api/games/trending").permitAll()
+            //                    .anyRequest().authenticated())
                .addFilterBefore(new JwtAuthenticationFilter(jwtService), UsernamePasswordAuthenticationFilter.class)
                .exceptionHandling(exceptionHandling ->
                        exceptionHandling

@@ -1,8 +1,6 @@
 package com.kairosgames.kairos_games.service.auth;
 
 import com.kairosgames.kairos_games.model.ERole;
-import com.kairosgames.kairos_games.model.PermissionEntity;
-import com.kairosgames.kairos_games.model.RoleEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
@@ -15,7 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Service
@@ -65,15 +62,6 @@ public class AuthService implements IAuthService{
     
     //REGISTER
     public AuthResponse register(UserEntity request) throws Exception {
-        PermissionEntity readPermission = PermissionEntity.builder()
-			.name("READ")
-			.build();
-        RoleEntity roleUser = RoleEntity.builder()
-			.roleEnum(ERole.USER)
-			.permissionEntitySet(Set.of(readPermission))
-			.build();
-
-
         try{
             java.security.Security.addProvider(
                 new org.bouncycastle.jce.provider.BouncyCastleProvider()
