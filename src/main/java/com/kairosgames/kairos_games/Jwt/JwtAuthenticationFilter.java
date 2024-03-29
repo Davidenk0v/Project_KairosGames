@@ -39,16 +39,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request,@NonNull HttpServletResponse response,@NonNull FilterChain filterChain) throws ServletException, IOException {
         logger.info("Request: " + request.getHeader("Authorization"));
-        logger.info("FilterChain: " + filterChain);
         String header = request.getHeader("Authorization");
 
         if(header == null || !header.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
-            logger.info("Entra al IF " + header);
             return;
         }
         String token = header.substring(7);
-
+        logger.info("TOKEN " + token);
         try{
             JWTClaimsSet claims = jwtService.parseJWT(token);
             UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, Collections.emptyList());
@@ -56,6 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         } catch (NoSuchAlgorithmException | InvalidKeySpecException | ParseException | JOSEException e) {
+            logger.error(token, e);
             throw new RuntimeException(e);
         }
 

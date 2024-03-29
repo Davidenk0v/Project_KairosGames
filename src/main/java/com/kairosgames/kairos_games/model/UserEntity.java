@@ -5,7 +5,10 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,13 +18,15 @@ import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
 
+@Getter
+@Setter
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-public class UserEntity implements UserDetails {
+public class UserEntity {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +54,20 @@ public class UserEntity implements UserDetails {
     @Max(99)
     private Integer edad;
 
-    @Enumerated(EnumType.STRING)
+    private boolean isAccountNonExpired;
+
+
+    private boolean isAccountNonLocked;
+
+
+    private boolean isCredentialsNonExpired;
+
+
+    private boolean isEnabled;
+
+
     private ERole rol;
+
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_preferences", 
@@ -82,31 +99,6 @@ public class UserEntity implements UserDetails {
 
     public void setUser_games(Game user_games) {
         this.user_games.add(user_games);
-    }
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(rol.name()));
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
     }
 
 }

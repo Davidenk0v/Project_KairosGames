@@ -13,12 +13,13 @@ import com.kairosgames.kairos_games.repository.UserRepository;
 import io.micrometer.common.lang.NonNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailService {
@@ -26,6 +27,8 @@ public class UserDetailsServiceImpl implements UserDetailService {
     
     @Autowired
     private UserRepository userRepository;
+
+    private UserEntity user;
 
     @Autowired
     private GameRepository gameRepository;
@@ -116,12 +119,34 @@ public class UserDetailsServiceImpl implements UserDetailService {
 
     @Override
     public UserEntity findByUsername(String username) {
-        Objects.requireNonNull(username);
-        if(this.userRepository.findByUsername(username).isPresent()){
-            throw new GameNotFoundException("Requested User does not exist");
-        }
-        return this.userRepository.findByUsername(username).get();
+        UserEntity userEntity = userRepository.findByUsername(username)
+                .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + " no existe"));
+
+                return userEntity;
     }
+
+    // public UserDetails loadByUsername(String username) {
+    //     UserEntity userEntity = userRepository.findByUsername(username)
+    //             .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + " no existe"));
+
+    //     List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
+
+    //     userEntity.getRoles()
+    //         .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
+        
+    //     userEntity.getRoles().stream()
+    //         .flatMap(role -> role.getPermissionEntitySet().stream())
+    //         .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
+
+    //     return new User(userEntity.getUsername(),
+    //                 userEntity.getPassword(),
+    //                 userEntity.isEnabled(),
+    //                 userEntity.isAccountNonExpired(),
+    //                 userEntity.isCredentialsNonExpired(),
+    //                 userEntity.isAccountNonLocked(),
+    //                 authorityList
+    //                 );
+    // }
 
     @Override
     public UserEntity save(UserEntity game) {

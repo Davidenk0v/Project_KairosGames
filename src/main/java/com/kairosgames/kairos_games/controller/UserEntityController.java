@@ -10,8 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 
 
@@ -21,12 +19,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 public class UserEntityController {
 
     @Autowired
-    private UserDetailService service; 
+    private UserDetailService service;
+
 
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers(){
         return ResponseEntity.status(HttpStatus.OK).body(this.service.findAll());
     }
+
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserEntity> findById(@PathVariable Long id){

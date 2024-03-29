@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.model.auth;
 
+import com.kairosgames.kairos_games.model.ERole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class RegisterRequest {
     private String username;
     private String password;
     private Integer edad;
+    private ERole role;
 
 }

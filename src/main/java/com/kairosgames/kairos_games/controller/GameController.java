@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -61,6 +62,7 @@ public class GameController {
     public ResponseEntity<List<Game>> getTrendingGames(){
         return ResponseEntity.ok(this.trendingService.findAll());
     }
+
 
     @GetMapping("/games/{id}")
     public ResponseEntity<Game> findById(@PathVariable Long id) {

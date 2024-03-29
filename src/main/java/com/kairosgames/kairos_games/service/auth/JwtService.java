@@ -1,5 +1,7 @@
 package com.kairosgames.kairos_games.service.auth;
 
+import com.kairosgames.kairos_games.model.ERole;
+import com.kairosgames.kairos_games.model.RoleEntity;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -21,9 +23,12 @@ import java.security.*;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class JwtService implements IJwtService{
@@ -106,54 +111,7 @@ public class JwtService implements IJwtService{
         byte[] decodedKey = Base64.getDecoder().decode(publicKeyPEM);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
-        return keyFactory.generatePublic(new PKCS8EncodedKeySpec(decodedKey));
+        return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
     }
 
-
-    //    public String getToken(UserDetails user){
-//        return getToken(new HashMap<>(), user);
-//    }
-
-    //    private String getToken(Map<String, Object> extraClaims, UserDetails user){
-//        UserEntity userEntity = repository.findByUsername(user.getUsername()).get();
-//        return Jwts
-//                .builder()
-//                .setClaims(extraClaims)
-//                .setSubject(userEntity.getRol().toString())
-//                .setIssuedAt(new Date(System.currentTimeMillis()))
-//                .setExpiration(new Date(System.currentTimeMillis()+1000*60*24))
-//                .signWith(getKey(), SignatureAlgorithm.HS256)
-//                .compact();
-//    }
-
-//    public String getUsernameFromToken(String token){
-//        return getClaim(token, Claims::getSubject);
-//    }
-//
-//    public boolean isTokenValid(String token, UserDetails userDetails){
-//        final String username = getUsernameFromToken(token);
-//        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
-//    }
-//
-//    private Claims getAllClaims(String token){
-//        return  Jwts
-//                .parser()
-//                .setSigningKey(getKey())
-//                .build()
-//                .parseClaimsJws(token)
-//                .getBody();
-//    }
-//
-//    public <T> T getClaim(String token, Function<Claims, T> claimsResolver){
-//        final Claims claims = getAllClaims(token);
-//        return claimsResolver.apply(claims);
-//    }
-//
-//    private Date getExpiration(String token){
-//        return getClaim(token, Claims::getExpiration);
-//    }
-//
-//    private boolean isTokenExpired(String token){
-//        return getExpiration(token).before(new Date());
-//    }
 }
