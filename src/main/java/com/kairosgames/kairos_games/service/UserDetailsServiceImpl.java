@@ -13,9 +13,8 @@ import com.kairosgames.kairos_games.repository.UserRepository;
 import io.micrometer.common.lang.NonNull;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -47,13 +46,19 @@ public class UserDetailsServiceImpl implements UserDetailService {
         }
     }
 
+    @Override
+    public List<Preferences> allPreferences() {
+        return this.preferenceRepository.findAll();
+    }
+
     public void removeGameToList(@NonNull Long user_id, @NonNull Long game_id) {
         try{
             Game game = this.gameRepository.findById(game_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
             user.getUser_games().remove(game);
+            this.userRepository.save(user);
         }catch(Exception e){
-            throw new InternalServerErrorException("Error when creating the relationship ");
+            throw new InternalServerErrorException("Error when removing the relationship ");
         }
     }
     
@@ -118,6 +123,17 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
+    public Optional<UserEntity> findByEmail(String email) {
+
+        Optional<UserEntity> user = this.userRepository.findByEmail(email);
+                if(user.isEmpty()){
+                    throw new UsernameNotFoundException("Requested User with email "+ email +" does not exist");
+                }
+
+        return user;
+    }
+
+    @Override
     public UserEntity findByUsername(String username) {
         UserEntity userEntity = userRepository.findByUsername(username)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + " no existe"));
@@ -125,28 +141,13 @@ public class UserDetailsServiceImpl implements UserDetailService {
                 return userEntity;
     }
 
-    // public UserDetails loadByUsername(String username) {
-    //     UserEntity userEntity = userRepository.findByUsername(username)
-    //             .orElseThrow(()-> new UsernameNotFoundException("El usuario " + username + " no existe"));
+    @Override
+    public Set<Game> getUserGames(Long id){
+        UserEntity user = this.userRepository.findById(id)
+                .orElseThrow(()-> new UsernameNotFoundException("El usuario con el id " + id + " no existe"));
+        return user.getUser_games();
+    }
 
-    //     List<SimpleGrantedAuthority> authorityList = new ArrayList<>();
-
-    //     userEntity.getRoles()
-    //         .forEach(role -> authorityList.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRoleEnum().name()))));
-        
-    //     userEntity.getRoles().stream()
-    //         .flatMap(role -> role.getPermissionEntitySet().stream())
-    //         .forEach(permission -> authorityList.add(new SimpleGrantedAuthority(permission.getName())));
-
-    //     return new User(userEntity.getUsername(),
-    //                 userEntity.getPassword(),
-    //                 userEntity.isEnabled(),
-    //                 userEntity.isAccountNonExpired(),
-    //                 userEntity.isCredentialsNonExpired(),
-    //                 userEntity.isAccountNonLocked(),
-    //                 authorityList
-    //                 );
-    // }
 
     @Override
     public UserEntity save(UserEntity game) {
@@ -159,14 +160,18 @@ public class UserDetailsServiceImpl implements UserDetailService {
     }
 
     @Override
-    public UserEntity update(@NonNull Long id,@NonNull  UserEntity game) {
+    public UserEntity update(@NonNull Long id, @NonNull  UserEntity newUser) {
         UserEntity old_user = this.userRepository.findById(id)
             .orElseThrow(()-> new IllegalArgumentException("User does not exist"));
-        
-            old_user.setEmail(null);
-            old_user.setFirstName(null);
-            old_user.setLastName(null);
-            old_user.setPassword(null);
-        return null;
+
+
+        old_user.setUsername(newUser.getUsername());
+        old_user.setEdad(newUser.getEdad());
+        old_user.setEmail(newUser.getEmail());
+        old_user.setFirstName(newUser.getFirstName());
+        old_user.setLastName(newUser.getLastName());
+        old_user.setPassword(newUser.getPassword());
+        userRepository.save(old_user);
+        return old_user;
     }
 }

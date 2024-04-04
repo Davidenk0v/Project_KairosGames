@@ -45,7 +45,7 @@ public class GameController {
     /* http://localhost:8080/api/games?page=2 */
     @GetMapping("/games")
     public ResponseEntity<Page<Game>> getAllPage(Pageable pageable) {
-        pageable = PageRequest.of(pageable.getPageNumber(), 10, pageable.getSort());
+        pageable = PageRequest.of(pageable.getPageNumber(), 12, pageable.getSort());
          Page<Game> gamePage = this.service.findAll(pageable);
         return ResponseEntity.ok(gamePage);
     }
