@@ -8,6 +8,7 @@ import com.kairosgames.kairos_games.service.TrendingService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,15 +33,17 @@ public class GameController {
 
     // Esto aquí en provisional
     @GetMapping("/")
-    public void loadingDatabase() {
-        this.service.loadDatabase();
-        this.trendingService.loadDatabase();
+    public ResponseEntity<String> loadingDatabase() {
+        try{
+            this.service.loadDatabase();
+            this.trendingService.loadDatabase();
+            return new ResponseEntity<>("Cargando", HttpStatus.OK);
+        }catch(Exception e){
+            throw new RuntimeException();
+        }
+
     }
 
-/*     @GetMapping("/games/null")
-    public ResponseEntity<List<Game>> getAllGames() {
-        return ResponseEntity.ok(this.service.findAll());
-    } */
 
     /* http://localhost:8080/api/games?page=2 */
     @GetMapping("/games")

@@ -1,7 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
 
-import com.kairosgames.kairos_games.Jwt.JwtAuthenticationFilter;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.service.UserDetailService;
@@ -55,9 +54,8 @@ public class UserEntityController {
         return ResponseEntity.status(HttpStatus.OK).body("Añadido");
     }
 
-    @PutMapping("/user/{id}")
+    @PutMapping("/users/{id}")
     public ResponseEntity<String> updateUser(@RequestBody UserEntity newData, @PathVariable Long id){
-        logger.info("NEWDATA " + newData);
         this.service.update(id, newData);
         return ResponseEntity.status(HttpStatus.OK).body("Editado");
     }
@@ -70,9 +68,9 @@ public class UserEntityController {
     }
 
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<String> deleteUser(@RequestParam String id){
-        this.service.deleteById(Long.parseLong(id));
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("User eliminated");
+    public ResponseEntity<String> deleteUser(@PathVariable Long id){
+        this.service.deleteById(id);
+        return ResponseEntity.status(HttpStatus.OK).body("User eliminated");
     }
 } 
 

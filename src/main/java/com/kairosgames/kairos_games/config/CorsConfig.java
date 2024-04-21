@@ -11,15 +11,15 @@ public class CorsConfig implements WebMvcConfigurer{
     @Override
     public void addCorsMappings(@NonNull CorsRegistry registry){
         registry.addMapping("/api/")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:5173")
                 .allowedMethods("GET")
                 .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
                 .exposedHeaders("*")
-                .allowCredentials(false)
+                .allowCredentials(true)
                 .maxAge(3600);
 
         registry.addMapping("/api/games")
-            .allowedOrigins("*")
+            .allowedOrigins("http://localhost:5173")
             .allowedMethods("GET")
             .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
             .exposedHeaders("*")
@@ -27,7 +27,7 @@ public class CorsConfig implements WebMvcConfigurer{
             .maxAge(3600);
 
         registry.addMapping("/password/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:5173")
                 .allowedMethods("*")
                 .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
                 .exposedHeaders("*")
@@ -36,22 +36,30 @@ public class CorsConfig implements WebMvcConfigurer{
 
 
         registry.addMapping("/auth/**")
-            .allowedOrigins("*")
+            .allowedOrigins("http://localhost:5173")
             .allowedMethods("GET", "POST")
             .allowedHeaders("Origin", "Content-Type", "Accept", "Authorization")
             .allowCredentials(false)
             .maxAge(3600);
             
             registry.addMapping("/api/users/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:5173")
                 .allowedMethods("*")
                 .allowedHeaders("Origin","Accept", "Access-Control-Allow-Origin", "Content-Type", "Authorization")
                 .exposedHeaders("*")
                 .allowCredentials(false)
                 .maxAge(3600);
 
+        registry.addMapping("/api/users")
+                .allowedOrigins("http://localhost:5173")
+                .allowedMethods("*")
+                .allowedHeaders("Origin","Accept", "Access-Control-Allow-Origin", "Content-Type", "Authorization")
+                .exposedHeaders("*")
+                .allowCredentials(true)
+                .maxAge(3600);
+
         registry.addMapping("/api/user/**")
-                .allowedOrigins("*")
+                .allowedOrigins("http://localhost:5173")
                 .allowedMethods("*")
                 .allowedHeaders("Origin","Accept", "Access-Control-Allow-Origin", "Content-Type", "Authorization")
                 .exposedHeaders("*")

@@ -109,7 +109,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
         if(this.userRepository.findById(id).isEmpty()){
             throw new GameBadRequestException("Requested User with id "+ id +" does not exist");
         }
-        
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -174,14 +174,22 @@ public class UserDetailsServiceImpl implements UserDetailService {
     public UserEntity update(@NonNull Long id, @NonNull  UserEntity newUser) {
         UserEntity old_user = this.userRepository.findById(id)
             .orElseThrow(()-> new IllegalArgumentException("User does not exist"));
+        Optional<UserEntity> optional = this.userRepository.findByUsername(newUser.getUsername());
 
+        if(optional.isPresent() && !old_user.getId().equals(optional.get().getId())) {
+            throw new UsernameNotFoundException("Ya existe usuario con ese username");
+        }
 
         old_user.setUsername(newUser.getUsername());
         old_user.setEdad(newUser.getEdad());
         old_user.setEmail(newUser.getEmail());
         old_user.setFirstName(newUser.getFirstName());
         old_user.setLastName(newUser.getLastName());
-        old_user.setPassword(newUser.getPassword());
+        if(old_user.getPassword() != newUser.getPassword()){
+            old_user.setPassword(encoder.encode(newUser.getPassword()));
+        }
+
+
         userRepository.save(old_user);
         return old_user;
     }

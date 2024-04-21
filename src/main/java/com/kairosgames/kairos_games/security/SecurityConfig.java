@@ -50,8 +50,7 @@ public class SecurityConfig {
    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
 
        return httpSecurity
-               .csrf(csrf->
-                       csrf.disable()
+               .csrf(AbstractHttpConfigurer::disable
                )
                .sessionManagement(sessionManager->
                        sessionManager
@@ -59,7 +58,10 @@ public class SecurityConfig {
                )
                 .authorizeHttpRequests(auth ->
                         auth
-                                .requestMatchers("/api/").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/api/users").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.DELETE,"/api/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.PUT,"/api/users/**").hasRole("ADMIN")
+                                .requestMatchers(HttpMethod.GET,"/api/").hasRole("ADMIN")
                                 .requestMatchers("/password/**").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/games").permitAll()

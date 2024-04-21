@@ -39,7 +39,7 @@ public class GameServiceImpl implements GameService {
                     this.repository.save(game); // Si no encuentra ninguno juego con ese nombre lo añade a la base de datos
                 } else {
                     for (Game game2 : sameName) {
-                        if (game2.getPlatform().equals(game.getPlatform())) {
+                        if (!game2.getPlatform().equals(game.getPlatform())) {
                             this.repository.save(game);
                         } else {
                             game2.setActualPrice(game.getActualPrice()); // Si encuentra alguno le actualiza el precio

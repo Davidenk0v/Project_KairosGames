@@ -15,6 +15,6 @@ public interface GameRepository extends JpaRepository<Game, Long> {
     List<Game> findByName(@Param("name") String name);
 
     //FILTRADO POR NOMBRE
-    @Query("SELECT g FROM Game g WHERE g.name LIKE :name%")
+    @Query("SELECT g FROM Game g WHERE g.name LIKE %:name%")
     List<Game> filterByName(@Param("name") String name);
 }
