@@ -59,7 +59,7 @@ public class SecurityConfig {
                )
                 .authorizeHttpRequests(auth ->
                         auth
-                                //.requestMatchers("/api").permitAll()
+                                .requestMatchers("/api/").permitAll()
                                 .requestMatchers("/password/**").permitAll()
                                 .requestMatchers("/auth/**").permitAll()
                                 .requestMatchers("/api/games").permitAll()

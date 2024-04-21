@@ -14,7 +14,7 @@ public class EmailServiceImpl implements EmailService{
 
     @Autowired
     private JavaMailSender emailSender;
-    private String url = "http://localhost:5173/password/newpassword";
+    private String url = "http://localhost:5173/newpassword";
 
     public void sendPasswordResetEmail(String to, String id) {
         MimeMessage message = emailSender.createMimeMessage();

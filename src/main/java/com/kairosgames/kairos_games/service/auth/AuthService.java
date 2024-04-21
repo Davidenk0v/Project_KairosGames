@@ -1,18 +1,27 @@
 package com.kairosgames.kairos_games.service.auth;
 
+import com.kairosgames.kairos_games.exceptions.EmailAlreadyExistException;
 import com.kairosgames.kairos_games.model.ERole;
+import com.kairosgames.kairos_games.model.RolEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
+import com.kairosgames.kairos_games.repository.RoleRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
+import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -20,56 +29,47 @@ public class AuthService implements IAuthService{
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private JwtService jwtService;
 
-    //private final AuthenticationManager authenticationManager;
-
+    @Autowired
+    UserDetailsServiceImpl userDetailsServices;
 
     //LOGIN
     @Override
-    public HashMap<String, String> login(LoginRequest request) throws Exception {
+    public ResponseEntity<?> login(LoginRequest request) throws Exception {
         try{
-            java.security.Security.addProvider(
-                new org.bouncycastle.jce.provider.BouncyCastleProvider()
-                );
-            HashMap<String, String> jwt = new HashMap<>();
-                Optional<UserEntity> userEntity = userRepository.findByUsername(request.getUsername());
-                if(userEntity.isEmpty()){
-                    jwt.put("error", "User not registered!");
-                    return jwt;
-                }
-                //Verificamos la contraseña
-                if(verifyPassword(request.getPassword(), userEntity.get().getPassword())){
-                    jwt.put("jwt", jwtService.generateJWT(userEntity.get().getId()));
-                } else {
-                    jwt.put("error", "Authentication failed");
-                }
-                return jwt;
+            Authentication authentication = userDetailsServices.authenticate(request.getUsername(), request.getPassword());
+            String jwt = jwtService.generateJWT(authentication);
 
-        } catch (Exception e) {
-            throw new Exception(e.toString());
+            Map<String, String> token = new HashMap<>();
+            token.put("token", jwt);
+
+            return new ResponseEntity<>(jwt, HttpStatus.OK);
+        }catch (Exception e){
+            System.out.println("Error:" + e);
+            return new ResponseEntity<>("Usuario o contraseña incorrecta", HttpStatus.BAD_REQUEST);
         }
     }
 
 
-    //Metodo que verifica la contraseña
-    private boolean verifyPassword(String enteredPassword, String storedPassword){
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        return encoder.matches(enteredPassword, storedPassword);
-    }
-
     
     //REGISTER
-    public AuthResponse register(UserEntity request) throws Exception {
+    public ResponseEntity<?> register(UserEntity request) throws Exception {
         try{
-            java.security.Security.addProvider(
-                new org.bouncycastle.jce.provider.BouncyCastleProvider()
-                );
             Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
             if(optional.isPresent()){
                 throw new UsernameNotFoundException("User already exists!");
             }
+            if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new EmailAlreadyExistException("Email already exists!");
+            }
+            List<String> rolesRequest = new ArrayList<>();
+            rolesRequest.add(ERole.USER.name());
+            Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
             UserEntity user = UserEntity.builder()
                     .username(request.getUsername())
@@ -78,12 +78,28 @@ public class AuthService implements IAuthService{
                     .lastName(request.getLastName())
                     .email(request.getEmail())
                     .edad(request.getEdad())
-                    .rol(ERole.USER)
+                    .roles(roleEntityList)
                     .build();
-            userRepository.save(user);
-            return AuthResponse.builder()
-                    .token(jwtService.generateJWT(user.getId()))
-                    .build();
+            UserEntity userSaved = userRepository.save(user);
+            try {
+
+                ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+                userSaved.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority("ROLE_".concat(role.getRol().name()))));
+
+                userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream()).forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
+
+                String jwt = jwtService.generateJWT(authentication);
+                Map<String, String> token = new HashMap<>();
+                token.put("token", jwt);
+
+                return new ResponseEntity<>(token, HttpStatus.OK);
+
+            } catch (Exception e) {
+                throw new Exception(e.toString());
+            }
         }catch(Exception e){
             throw new Exception(e.toString());
         }

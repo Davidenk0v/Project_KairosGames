@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.service.auth;
 
+import com.kairosgames.kairos_games.model.UserEntity;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.RSASSASigner;
 import com.nimbusds.jose.crypto.RSASSAVerifier;
@@ -10,6 +11,8 @@ import com.kairosgames.kairos_games.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 
@@ -25,11 +28,12 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService implements IJwtService{
 
-//    private static final String SECRET_KEY="kdmvp39q0UNgrPTcUp6g6mlK5sGsYjPmOo6XGQ2GZcUVbOGXY7cBXZMxZw3Zxm";
     @Value("classpath:jwtKeys/private_key.pem")
     private Resource privateKeyResource;
 
@@ -42,24 +46,40 @@ public class JwtService implements IJwtService{
     //REFACTORIZADOS METODOS DEPRECADOS
 
     @Override
-    public String generateJWT(Long userId) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
+    public String generateJWT(Authentication authentication) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
         PrivateKey privateKey = getPrivateKey(privateKeyResource);
-
         JWSSigner signer = new RSASSASigner(privateKey);
-
         Date now = new Date();
-        String rol = repository.findById(userId).get().getRol().name();
+        String username = authentication.getPrincipal().toString();
+        String authorities = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.joining(","));
+        UserEntity user = repository.findByUsername(username).get();
         JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(userId.toString())
-                .issuer(rol)
+                .subject(username)
+                .claim("authorities", authorities)
+                .claim("id", user.getId())
                 .issueTime(now)
                 .expirationTime(new Date(now.getTime() + 14400000)) //Son 4 horas de expiración en milisegundos
+                .jwtID(UUID.randomUUID().toString())
+                .notBeforeTime(now)
                 .build();
 
         SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
         signedJWT.sign(signer);
 
         return signedJWT.serialize();
+    }
+
+    @Override
+    public String extractUsername(JWTClaimsSet jwtClaimsSet){
+        return jwtClaimsSet.getSubject();
+    }
+
+    @Override
+    public String getSpecificClaim(JWTClaimsSet jwtClaimsSet, String claimName){
+        return jwtClaimsSet.getClaim(claimName).toString();
     }
 
     @Override
@@ -86,10 +106,10 @@ public class JwtService implements IJwtService{
     private PrivateKey getPrivateKey(Resource resource) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
         byte[] keyBytes = Files.readAllBytes(Paths.get(resource.getURI()));
         String privateKeyPEM = new String(keyBytes, StandardCharsets.UTF_8)
-                .replace("-----BEGIN RSA PRIVATE KEY-----", "")
-                .replace("-----END RSA PRIVATE KEY-----", "")
+                .replace("-----BEGIN PRIVATE KEY-----", "")
+                .replace("-----END PRIVATE KEY-----", "")
                 .replaceAll("\\s", "");
-
+        System.out.println(privateKeyPEM);
         byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
@@ -106,7 +126,6 @@ public class JwtService implements IJwtService{
 
         byte[] decodedKey = Base64.getDecoder().decode(publicKeyPEM);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
         return keyFactory.generatePublic(new X509EncodedKeySpec(decodedKey));
     }
 

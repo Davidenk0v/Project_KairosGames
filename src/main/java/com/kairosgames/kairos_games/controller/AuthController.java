@@ -28,18 +28,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<HashMap<String, String>> login(@RequestBody LoginRequest request) throws Exception{
-        HashMap<String, String> login = authService.login(request);
-        if(login.containsKey("jwt")){
-            return new ResponseEntity<>(login, HttpStatus.OK);
-        }
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) throws Exception{
 
-        return new ResponseEntity<>(login, HttpStatus.UNAUTHORIZED);
+            return authService.login(request);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registrer(@RequestBody UserEntity user) throws Exception {
-        return new ResponseEntity<>(authService.register(user), HttpStatus.CREATED);
+    public ResponseEntity<?> registrer(@RequestBody UserEntity user) throws Exception {
+        return authService.register(user);
     }
 
 }
