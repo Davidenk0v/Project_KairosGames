@@ -1,15 +1,13 @@
 package com.kairosgames.kairos_games.service.email;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.stereotype.Component;
 
 import java.util.Properties;
 
-@Component
+@Configuration
 public class JavaEmailSenderImpl implements JavaEmailSender{
 
     @Bean
@@ -18,8 +16,8 @@ public class JavaEmailSenderImpl implements JavaEmailSender{
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
 
-        mailSender.setUsername("david4100ggx@gmail.com");
-        mailSender.setPassword("zrtj gwuz zppo usuh");
+        mailSender.setUsername(""); //AQUI EL EMAIL
+        mailSender.setPassword(" "); //AQUI DEBES PONER EL PASSWORD DEL EMAIL
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
