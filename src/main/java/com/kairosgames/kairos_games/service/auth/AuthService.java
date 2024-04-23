@@ -4,7 +4,6 @@ import com.kairosgames.kairos_games.exceptions.EmailAlreadyExistException;
 import com.kairosgames.kairos_games.model.ERole;
 import com.kairosgames.kairos_games.model.RolEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
-import com.kairosgames.kairos_games.model.auth.AuthResponse;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.repository.RoleRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;

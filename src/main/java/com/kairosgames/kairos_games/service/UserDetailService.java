@@ -7,7 +7,7 @@ import java.util.Set;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
-import org.springframework.data.repository.query.Param;
+
 
 public interface UserDetailService {
 
