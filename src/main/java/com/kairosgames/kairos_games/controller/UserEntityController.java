@@ -47,11 +47,15 @@ public class UserEntityController {
         return ResponseEntity.ok(this.service.findByUsername(username));
     }
 
-    @PostMapping("/user/games/add/{user_id}/{game_id}")
-    public ResponseEntity<String> addGameToList(@RequestBody Long user_id, @RequestBody Long game_id) {
-        this.service.addGameToList(user_id, game_id);
+    @GetMapping("/user/games/add/{user_id}/{game_id}")
+    public ResponseEntity<String> addGameToList(@PathVariable Long user_id, @PathVariable Long game_id) {
+        try{
+            this.service.addGameToList(user_id, game_id);
+            return ResponseEntity.status(HttpStatus.OK).body("Añadido");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.MULTI_STATUS).body("No se pudo añadir");
+        }
 
-        return ResponseEntity.status(HttpStatus.OK).body("Añadido");
     }
 
     @PutMapping("/users/{id}")
