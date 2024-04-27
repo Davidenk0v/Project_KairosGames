@@ -76,7 +76,7 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         List<UserDetails> userDetailList = new ArrayList<>();
-        userDetailList.add(User.withUsername("Raquel")
+        userDetailList.add(User.withUsername("Tati")
                 .password("1234")
                 .roles("ADMIN")
                 .authorities("ALL")

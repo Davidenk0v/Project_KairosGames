@@ -43,7 +43,7 @@ public class Game implements Comparator<Game> {
     @Column(name = "shop")
     private String shop;
 
-    @ManyToMany(mappedBy = "user_games", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "userGames", fetch = FetchType.LAZY)
     private Set<UserEntity> game_users = new HashSet<>();
 
     public BigDecimal getHigherPrice() {
