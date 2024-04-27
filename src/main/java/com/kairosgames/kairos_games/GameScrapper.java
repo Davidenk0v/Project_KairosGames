@@ -83,8 +83,8 @@ public class GameScrapper {
                 platformsList.add(data.select("#platforms-choices > option").text());
                 String platform = String.join(",", platformsList);
                 String urlImg = data.select("picture > img").attr("data-src");
-                gamesList.add(new Game(name, new BigDecimal(highPrice), urlImg, new BigDecimal(actualPrice), platform,
-                        url, "InstaGaming"));
+                gamesList.add(new Game(name, new BigDecimal(actualPrice), urlImg, new BigDecimal(highPrice), url,
+                        platform, "InstantGaming"));
             }
         } catch (IOException e) {
             throw new InternalServerErrorException("Error while loading data from Instagames", e);
@@ -98,7 +98,7 @@ public class GameScrapper {
 
         List<Game> gamesList = new ArrayList<>();
         try {
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 50; i++) {
                 String url = "https://www.eneba.com/es/store/games?page=" + i;
                 Document document = Jsoup.connect(url).get();
                 Elements games = document.select(".uy1qit");
@@ -115,7 +115,6 @@ public class GameScrapper {
                     Element high_priceElement = game.select("div.iqjN1x span.L5ErLT").first();
                     String platform = getPlataformEneba(urlPage);
 
-
                     if (high_priceElement == null) {
                         gamesList.add(new Game(title, new BigDecimal(price), urlImg,new BigDecimal(price), urlPage, platform, "Eneba"));
                     } else {
@@ -124,7 +123,7 @@ public class GameScrapper {
                         high_price = (high_price.substring(0, high_price.length() - 1).replace(",", ".")).trim();
                         gamesList.add(
                                 new Game(title, new BigDecimal(price), urlImg, new BigDecimal(high_price),
-                                        platform, urlPage, "Eneba"));
+                                        urlPage, platform , "Eneba"));
                     }
                 }
             }

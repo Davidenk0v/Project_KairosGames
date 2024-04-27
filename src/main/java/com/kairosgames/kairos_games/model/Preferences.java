@@ -35,14 +35,14 @@ public class Preferences {
         this.name = name;
     }
 
-    public Set<UserEntity> getUsers() {
-        return users;
-    }
+//    public Set<UserEntity> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(UserEntity user) {
+//        this.users.add(user);
+//    }
 
-    public void setUsers(UserEntity user) {
-        this.users.add(user);
-    }
-
-    @ManyToMany(mappedBy = "preferences", fetch = FetchType.LAZY)
-    Set<UserEntity> users = new HashSet<>();
+//    @ManyToMany(mappedBy = "preferences", fetch = FetchType.LAZY)
+//    Set<UserEntity> users = new HashSet<>();
 }

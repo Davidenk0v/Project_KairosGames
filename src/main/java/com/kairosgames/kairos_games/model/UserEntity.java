@@ -24,7 +24,7 @@ import java.util.Set;
 @Entity
 @Table(name = "users")
 public class UserEntity implements UserDetails {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -68,11 +68,11 @@ public class UserEntity implements UserDetails {
     private Set<RolEntity> roles;
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_preferences", 
-    joinColumns = @JoinColumn(name = "user_id"), 
-    inverseJoinColumns = @JoinColumn(name = "preferences_id"))
-    private Set<Preferences> preferences;
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "user_preferences",
+//    joinColumns = @JoinColumn(name = "user_id"),
+//    inverseJoinColumns = @JoinColumn(name = "preferences_id"))
+//    private Set<Preferences> preferences;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_game", 
@@ -88,9 +88,9 @@ public class UserEntity implements UserDetails {
         this.roles = roles;
     }
 
-    public void setPreferences(Preferences preference) {
-        this.preferences.add(preference);
-    }
+//    public void setPreferences(Preferences preference) {
+//        this.preferences.add(preference);
+//    }
 
     public Set<Game> getUser_games() {
         return user_games;

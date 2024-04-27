@@ -87,14 +87,14 @@ public class Game implements Comparator<Game> {
         this.shop = shop;
     }
 
-    public Game(String name, BigDecimal actualPrice, String urlImg, BigDecimal highPrice, String platform,
-            String urlPage, String shop) {
+    public Game(String name, BigDecimal actualPrice, String urlImg, BigDecimal highPrice,
+            String urlPage, String platform, String shop) {
         this.name = name;
         this.urlImg = urlImg;
         this.higherPrice = highPrice;
         this.setActualPrice(actualPrice);
-        this.platform = platform;
         this.urlPage = urlPage;
+        this.platform = platform;
         this.shop = shop;
     }
 
