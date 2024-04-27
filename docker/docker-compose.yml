@@ -1,0 +1,34 @@
+version: '3.8'
+networks:
+  kairos-games:
+    driver: bridge
+volumes:
+  kairos-games-database:
+services:
+  mysql:
+    image: mysql:latest
+    environment:
+      MYSQL_DATABASE: videogames
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: password
+    ports:
+      - "3330:3306"
+    networks:
+      - kairos-games
+    volumes:
+      - kairos-games-database:/var/lib/mysql
+
+  kairos-games-backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/videogames
+    networks:
+      - kairos-games
+
