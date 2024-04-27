@@ -24,7 +24,6 @@ public class UserEntityController {
     @Autowired
     private UserDetailService service;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserEntityController.class);
 
     @GetMapping("/users")
     public ResponseEntity<List<UserEntity>> getAllUsers(){
@@ -42,15 +41,15 @@ public class UserEntityController {
         return ResponseEntity.ok(this.service.findById(id).get());
     }
 
-    @GetMapping("/users/name/{name}")
+    @GetMapping("/users/name/{username}")
     public ResponseEntity<UserEntity> findByUserName(@PathVariable String username){
         return ResponseEntity.ok(this.service.findByUsername(username));
     }
 
-    @GetMapping("/user/games/add/{user_id}/{game_id}")
-    public ResponseEntity<String> addGameToList(@PathVariable Long user_id, @PathVariable Long game_id) {
+    @GetMapping("/user/games/add/{userId}/{gameId}")
+    public ResponseEntity<String> addGameToList(@PathVariable Long userId, @PathVariable Long gameId) {
         try{
-            this.service.addGameToList(user_id, game_id);
+            this.service.addGameToList(userId, gameId);
             return ResponseEntity.status(HttpStatus.OK).body("Añadido");
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.MULTI_STATUS).body("No se pudo añadir");
@@ -64,9 +63,9 @@ public class UserEntityController {
         return ResponseEntity.status(HttpStatus.OK).body("Editado");
     }
 
-    @DeleteMapping("/user/games/{user_id}/{game_id}")
-    public ResponseEntity<String> removeGameToList(@PathVariable Long user_id, @PathVariable Long game_id) {
-        this.service.removeGameToList(user_id, game_id);
+    @DeleteMapping("/user/games/{userId}/{gameId}")
+    public ResponseEntity<String> removeGameToList(@PathVariable Long userId, @PathVariable Long gameId) {
+        this.service.removeGameToList(userId, gameId);
 
         return ResponseEntity.status(HttpStatus.OK).body("Eliminado");
     }

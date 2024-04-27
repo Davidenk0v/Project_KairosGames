@@ -68,17 +68,11 @@ public class UserEntity implements UserDetails {
     private Set<RolEntity> roles;
 
 
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "user_preferences",
-//    joinColumns = @JoinColumn(name = "user_id"),
-//    inverseJoinColumns = @JoinColumn(name = "preferences_id"))
-//    private Set<Preferences> preferences;
-
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_game", 
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "game_id"))
-    private Set<Game> user_games = new HashSet<>();
+    private Set<Game> userGames = new HashSet<>();
 
     public Set<RolEntity> getRoles() {
         return roles;
@@ -88,16 +82,12 @@ public class UserEntity implements UserDetails {
         this.roles = roles;
     }
 
-//    public void setPreferences(Preferences preference) {
-//        this.preferences.add(preference);
-//    }
-
     public Set<Game> getUser_games() {
-        return user_games;
+        return userGames;
     }
 
-    public void setUser_games(Game user_games) {
-        this.user_games.add(user_games);
+    public void setUser_games(Game userGames) {
+        this.userGames.add(userGames);
     }
 
     @Override

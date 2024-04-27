@@ -26,26 +26,10 @@ public class PreferencesController {
         return ResponseEntity.ok(this.userDetailService.allPreferences());
     }
 
-//    @PostMapping("/preferences/add/{user_id}")
-//    public ResponseEntity<String> addPreferencesToUser(@PathVariable("user_id") Long userId, @RequestBody List<UserPreferenceRequest> preferences) {
-//        this.service.addPreferenceToUser(userId, preferences);
-//
-//        return ResponseEntity.ok("Añadidas todas las preferencias");
-//    }
 
     @PostMapping("/preferences/add/{user_id}")
     public ResponseEntity<String> addPreferencesToUser(@PathVariable("user_id") Long userId, @RequestBody List<UserPreferenceRequest> preferences) {
         userPreferenceService.saveAllPreferences(userId, preferences);
         return ResponseEntity.ok("Añadidas todas las preferencias");
     }
-
-//    @PostMapping("/preferences/remove/{user_id}/{preference_id}")
-//    public ResponseEntity<String> removePreferencesToUser(@RequestBody Long user_id, @RequestBody Long game_id) {
-//        this.userDetailService.removePreferenceToUser(user_id, game_id);
-//
-//        return ResponseEntity.ok("Borrado");
-//    }
-
-
-
 }
