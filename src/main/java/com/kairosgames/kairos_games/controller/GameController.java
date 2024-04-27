@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
+import com.kairosgames.kairos_games.JaccardSimilarity;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.service.GameService;
 
@@ -55,8 +56,10 @@ public class GameController {
 
     @GetMapping("/games/filter/{name}")
     public ResponseEntity<List<Game>> filterByName(@PathVariable String name) {
-         List<Game> games = this.service.filterByname(name);
-        return ResponseEntity.ok(games);
+        String halfLength = name.substring(0, name.length() / 2);
+        List<Game> games = this.service.filterByname(halfLength);
+        List<Game> gameSimi = JaccardSimilarity.jaccardSimilarity(name, games);
+         return ResponseEntity.ok(gameSimi);
     }
     
     

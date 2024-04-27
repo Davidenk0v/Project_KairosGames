@@ -9,6 +9,7 @@ import com.kairosgames.kairos_games.repository.RoleRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

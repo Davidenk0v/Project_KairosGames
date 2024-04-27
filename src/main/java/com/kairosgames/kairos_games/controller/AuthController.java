@@ -25,8 +25,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) throws Exception{
-
-            return authService.login(request);
+        return authService.login(request);
     }
 
     @PostMapping("/register")
