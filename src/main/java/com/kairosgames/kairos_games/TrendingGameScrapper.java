@@ -16,8 +16,6 @@ import java.util.Set;
 @Component
 public class TrendingGameScrapper {
 
-    public  TrendingGameScrapper(){}
-
 
     public List<String> getTrendingG2a(){
         List<String> trendingG2a = new ArrayList<>();
@@ -53,7 +51,7 @@ public class TrendingGameScrapper {
     }
 
     public Set<String> getAllTrending(){
-        Set<String> allTrending = new HashSet<String>();
+        Set<String> allTrending = new HashSet<>();
         allTrending.addAll(getTrendingG2a());
         allTrending.addAll(getTrendingInstaGames());
         return allTrending;

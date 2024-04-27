@@ -43,7 +43,6 @@ public class JwtService implements IJwtService{
     @Autowired
     private UserRepository repository;
 
-    //REFACTORIZADOS METODOS DEPRECADOS
 
     @Override
     public String generateJWT(Authentication authentication) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException, JOSEException {
