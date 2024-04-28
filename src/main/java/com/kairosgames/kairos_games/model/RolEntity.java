@@ -24,7 +24,7 @@ public class RolEntity {
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "role_permission", joinColumns = @JoinColumn(name = "role_id"), inverseJoinColumns = @JoinColumn(name = "permission_id"))
-    private Set<PermissionEntity> permissionList = new HashSet<>();
+    private Set<PermissionEntity> permissionList;
 
     public Long getId() {
         return id;

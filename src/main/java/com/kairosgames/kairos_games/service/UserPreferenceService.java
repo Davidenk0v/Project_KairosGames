@@ -20,33 +20,32 @@ public class UserPreferenceService {
     @Autowired
     private PreferencesServiceImpl preferencesService;
 
-    @Transactional
-    public void saveAllPreferences(Long userId, List<UserPreferenceRequest> preferences) {
-        UserEntity user = findUser(userId);
-        List<UserPreferences> userPreferences = getUserPreferences(preferences, user);
-        userPreferenceRepository.saveAll(userPreferences);
-    }
+    // @Transactional
+    // public void saveAllPreferences(Long userId, List<UserPreferenceRequest> preferences) {
+    //     UserEntity user = findUser(userId);
+    //     List<UserPreferences> userPreferences = getUserPreferences(preferences, user);
+    //     userPreferenceRepository.saveAll(userPreferences);
+    // }
 
-    private List<UserPreferences> getUserPreferences(List<UserPreferenceRequest> preferences, UserEntity user) {
-        List<UserPreferences> userPreferences = new ArrayList<>();
-        for (UserPreferenceRequest pref : preferences){
-            Preferences preference = findThePreference(pref);
-            UserPreferences userPreference = new UserPreferences();
-            userPreference.setUserId(user.getId());
-            userPreference.setPreferenceId(preference);
-            userPreference.setResponse(pref.getResponse());
-            userPreferences.add(userPreference);
-        }
-        return userPreferences;
-    }
+    // private List<UserPreferences> getUserPreferences(List<UserPreferenceRequest> preferences, UserEntity user) {
+    //     List<UserPreferences> userPreferences = new ArrayList<>();
+    //     for (UserPreferenceRequest pref : preferences){
+    //         Preferences preference = findThePreference(pref);
+    //         UserPreferences userPreference = new UserPreferences();
+    //         userPreference.setUserId(user);
+    //         userPreference.setPreferenceId(preference);
+    //         userPreferences.add(userPreference);
+    //     }
+    //     return userPreferences;
+    // }
 
-    private Preferences findThePreference(UserPreferenceRequest pref) {
-        return preferencesService.findById(pref.getPreferenceId())
-                .orElseThrow(() -> new RuntimeException("Preferencia no encontrada"));
-    }
+    // private Preferences findThePreference(UserPreferenceRequest pref) {
+    //     return preferencesService.findById(pref.getPreferenceId())
+    //             .orElseThrow(() -> new RuntimeException("Preferencia no encontrada"));
+    // }
 
-    private UserEntity findUser(Long userId) {
-        return userDetailService.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
-    }
+    // private UserEntity findUser(Long userId) {
+    //     return userDetailService.findById(userId)
+    //             .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    // }
 }

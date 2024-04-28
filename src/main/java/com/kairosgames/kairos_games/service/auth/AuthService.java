@@ -5,16 +5,20 @@ import com.kairosgames.kairos_games.model.ERole;
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.RolEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
-import com.kairosgames.kairos_games.model.UserPreferences;
+import com.kairosgames.kairos_games.model.UserPreferenceRequest;
+import com.kairosgames.kairos_games.model.UserRequestDto;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.repository.RoleRepository;
 import com.kairosgames.kairos_games.repository.UserPreferenceRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,12 +26,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
 public class AuthService implements IAuthService {
+
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -54,45 +61,49 @@ public class AuthService implements IAuthService {
             token.put("token", jwt);
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
-        } catch (Exception e) {
+        }catch (Exception e){
             return new ResponseEntity<>("Usuario o contraseña incorrecta", HttpStatus.BAD_REQUEST);
         }
     }
 
 
     //REGISTER
-    public ResponseEntity<?> register(UserEntity request, Preferences preferences) throws Exception {
-            if (request != null) {
-                Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
-                if (optional.isPresent()) {
-                    throw new UsernameNotFoundException("User already exists!");
-                }
-                if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-                    throw new EmailAlreadyExistException("Email already exists!");
-                }
-                List<String> rolesRequest = new ArrayList<>();
-                rolesRequest.add(ERole.USER.name());
-                Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
-                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-                UserEntity user = UserEntity.builder()
-                        .username(request.getUsername())
-                        .password(encoder.encode(request.getPassword()))
-                        .firstName(request.getFirstName())
-                        .lastName(request.getLastName())
-                        .email(request.getEmail())
-                        .edad(request.getEdad())
-                        .roles(roleEntityList)
-                        .build();
-                UserEntity userSaved = userRepository.save(user);
+    public ResponseEntity<?> register(UserRequestDto request) throws Exception {
+        try{
+            Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
+            if(optional.isPresent()){
+                throw new UsernameNotFoundException("User already exists!");
+            }
+            if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                throw new EmailAlreadyExistException("Email already exists!");
+            }
+            List<String> rolesRequest = new ArrayList<>();
+            rolesRequest.add(ERole.USER.name());
+            Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
+            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
 
-                UserPreferences userPreferences = new UserPreferences()
-                .builder()
-                        .user_id(userSaved.getId())
-                        .preferences(preferences)
-                        .response("Si")
-                        .build();
+            UserEntity user = UserEntity.builder()
+                    .username(request.getUsername())
+                    .password(encoder.encode(request.getPassword()))
+                    .firstName(request.getFirstName())
+                    .lastName(request.getLastName())
+                    .email(request.getEmail())
+                    .edad(request.getEdad())
+                    .roles(roleEntityList)
+                    .build();
 
-                        userPreferencesRepository.save(userPreferences);
+                    request.getPreferences().forEach(prefe -> {
+                        try {
+                            Preferences preference = new Preferences().builder()
+                                    .name(prefe)
+                                    .build();
+                                    user.getPreferences().add(preference);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+       
+            UserEntity userSaved = userRepository.save(user);
 
 
                 ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -101,16 +112,17 @@ public class AuthService implements IAuthService {
 
                 userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream()).forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved.getUsername(), null, authorities);
 
                 String jwt = jwtService.generateJWT(authentication);
                 Map<String, String> token = new HashMap<>();
                 token.put("token", jwt);
 
                 return new ResponseEntity<>(token, HttpStatus.OK);
-            }
 
-        return new ResponseEntity<>("Error al crear usuario", HttpStatus.BAD_REQUEST);
+        }catch(Exception e){
+            throw new Exception(e.toString());
+        }
     }
 
 }

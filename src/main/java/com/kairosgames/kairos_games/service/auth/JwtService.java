@@ -35,6 +35,8 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService implements IJwtService{
 
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(JwtService.class);
+
     @Value("classpath:jwtKeys/private_key.pem")
     private Resource privateKeyResource;
 
@@ -51,6 +53,9 @@ public class JwtService implements IJwtService{
         JWSSigner signer = new RSASSASigner(privateKey);
         Date now = new Date();
         String username = authentication.getPrincipal().toString();
+        
+        logger.info("Username: " + username);
+
         String authorities = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)

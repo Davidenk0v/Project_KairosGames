@@ -68,28 +68,19 @@ public class UserEntity implements UserDetails {
     private Set<RolEntity> roles;
 
 
+   @ManyToMany(fetch = FetchType.LAZY)
+   @JoinTable(name = "user_preferences",
+   joinColumns = @JoinColumn(name = "user_id"),
+   inverseJoinColumns = @JoinColumn(name = "preferences_id"))
+   private Set<Preferences> preferences;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_game", 
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "game_id"))
-    private Set<Game> userGames = new HashSet<>();
+    private Set<Game> user_games;
 
-    public Set<RolEntity> getRoles() {
-        return roles;
-    }
-
-    public void setRol(Set<RolEntity> roles) {
-        this.roles = roles;
-    }
-
-    public Set<Game> getUser_games() {
-        return userGames;
-    }
-
-    public void setUser_games(Game userGames) {
-        this.userGames.add(userGames);
-    }
-
+   
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return null;

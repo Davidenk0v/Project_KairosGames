@@ -47,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
         try{
             Game game = this.gameRepository.findById(game_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
-            user.setUser_games(game);
+            user.getUser_games().add(game);
             userRepository.save(user);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when creating the relationship ");

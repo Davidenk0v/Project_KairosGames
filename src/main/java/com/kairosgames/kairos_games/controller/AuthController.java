@@ -2,10 +2,14 @@ package com.kairosgames.kairos_games.controller;
 
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
+import com.kairosgames.kairos_games.model.UserPreferenceRequest;
+import com.kairosgames.kairos_games.model.UserRequestDto;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.service.auth.AuthService;
 
 import lombok.RequiredArgsConstructor;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrer(@RequestBody UserEntity user,@RequestBody Preferences preferences) throws Exception {
-        return authService.register(user, preferences);
+    public ResponseEntity<?> registrer(@RequestBody UserRequestDto user) throws Exception {
+        return authService.register(user);
     }
-
 }
