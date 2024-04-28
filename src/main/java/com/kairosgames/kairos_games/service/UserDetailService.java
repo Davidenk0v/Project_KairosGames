@@ -7,7 +7,6 @@ import java.util.Set;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
-import com.kairosgames.kairos_games.model.UserPreferenceRequest;
 
 
 public interface UserDetailService {
@@ -44,7 +43,6 @@ public interface UserDetailService {
     List<Preferences> allPreferences();
     void removeGameToList(Long user_id, Long game_id);
 
-//    void addPreferenceToUser(Long user_id, List<UserPreferenceRequest> preference);
     void removePreferenceToUser(Long user_id, Long preference_id);
     
 } 

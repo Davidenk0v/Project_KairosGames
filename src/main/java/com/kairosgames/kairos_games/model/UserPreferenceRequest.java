@@ -10,16 +10,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserPreferenceRequest {
 
-    private Long preferenceId;
-    private String response;
-
-    public Long getPreferenceId() {
-        return preferenceId;
-    }
-    public void setPreferenceId(Long preferenceId) {
-        this.preferenceId = preferenceId;
-    }
-    public String getResponse(){return response;}
-    public void setResponse(String response){this.response = response;}
-
+    private String genero;
+    private String franquicia;
+    private String plataforma;
+    private String motivacion;
+    private String narrativa;
+    private String experiencia;
+    private String esperado;
+    private String tipoMundo;
+    private String juegoFav;
 }

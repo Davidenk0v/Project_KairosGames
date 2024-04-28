@@ -2,17 +2,22 @@ package com.kairosgames.kairos_games.service.auth;
 
 import com.kairosgames.kairos_games.exceptions.EmailAlreadyExistException;
 import com.kairosgames.kairos_games.model.ERole;
+import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.RolEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
+import com.kairosgames.kairos_games.model.UserPreferenceRequest;
+import com.kairosgames.kairos_games.model.UserRequestDto;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.repository.RoleRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
-import jakarta.transaction.Transactional;
+
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,12 +25,15 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
 
 @Service
 public class AuthService implements IAuthService{
+
+    private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(AuthService.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -50,7 +58,6 @@ public class AuthService implements IAuthService{
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
         }catch (Exception e){
-            System.out.println("Error:" + e);
             return new ResponseEntity<>("Usuario o contraseña incorrecta", HttpStatus.BAD_REQUEST);
         }
     }
@@ -58,7 +65,7 @@ public class AuthService implements IAuthService{
 
     
     //REGISTER
-    public ResponseEntity<?> register(UserEntity request) throws Exception {
+    public ResponseEntity<?> register(UserRequestDto request) throws Exception {
         try{
             Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
             if(optional.isPresent()){
@@ -71,6 +78,7 @@ public class AuthService implements IAuthService{
             rolesRequest.add(ERole.USER.name());
             Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
             BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+
             UserEntity user = UserEntity.builder()
                     .username(request.getUsername())
                     .password(encoder.encode(request.getPassword()))
@@ -80,8 +88,20 @@ public class AuthService implements IAuthService{
                     .edad(request.getEdad())
                     .roles(roleEntityList)
                     .build();
+
+                    request.getPreferences().forEach(prefe -> {
+                        try {
+                            Preferences preference = new Preferences().builder()
+                                    .name(prefe)
+                                    .build();
+                                    user.getPreferences().add(preference);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    });
+       
             UserEntity userSaved = userRepository.save(user);
-            try {
+
 
                 ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -89,7 +109,7 @@ public class AuthService implements IAuthService{
 
                 userSaved.getRoles().stream().flatMap(role -> role.getPermissionList().stream()).forEach(permission -> authorities.add(new SimpleGrantedAuthority(permission.getName())));
 
-                Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved, null, authorities);
+                Authentication authentication = new UsernamePasswordAuthenticationToken(userSaved.getUsername(), null, authorities);
 
                 String jwt = jwtService.generateJWT(authentication);
                 Map<String, String> token = new HashMap<>();
@@ -97,9 +117,6 @@ public class AuthService implements IAuthService{
 
                 return new ResponseEntity<>(token, HttpStatus.OK);
 
-            } catch (Exception e) {
-                throw new Exception(e.toString());
-            }
         }catch(Exception e){
             throw new Exception(e.toString());
         }

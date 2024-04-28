@@ -6,7 +6,6 @@ import com.kairosgames.kairos_games.exceptions.InternalServerErrorException;
 import com.kairosgames.kairos_games.model.Game;
 import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
-import com.kairosgames.kairos_games.model.UserPreferenceRequest;
 import com.kairosgames.kairos_games.repository.GameRepository;
 import com.kairosgames.kairos_games.repository.PreferencesRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
@@ -34,8 +33,6 @@ public class UserDetailsServiceImpl implements UserDetailService {
     @Autowired
     private UserRepository userRepository;
 
-    private UserEntity user;
-
     @Autowired
     private GameRepository gameRepository;
 
@@ -50,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
         try{
             Game game = this.gameRepository.findById(game_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
-            user.setUser_games(game);
+            user.getUser_games().add(game);
             userRepository.save(user);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when creating the relationship ");
@@ -73,25 +70,12 @@ public class UserDetailsServiceImpl implements UserDetailService {
         }
     }
     
-    
-//    @Override
-//    public void addPreferenceToUser(@NonNull Long user_id, @NonNull List<UserPreferenceRequest> preferences) {
-//        try{
-////            Preferences preference = this.preferenceRepository.findById(preference_id).get();
-////            UserEntity user = this.userRepository.findById(user_id).get();
-//////            user.setPreferences(preference);
-//        }catch(Exception e){
-//            throw new InternalServerErrorException("Error when creating the relationship ");
-//        }
-//
-//    }
 
     @Override
     public void removePreferenceToUser(@NonNull Long user_id,@NonNull  Long preference_id) {
         try{
             Preferences preference = this.preferenceRepository.findById(preference_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
-//            user.getPreferences().remove(preference);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when creating the relationship ");
         }
