@@ -32,7 +32,7 @@ public class UserPreferenceService {
         for (UserPreferenceRequest pref : preferences){
             Preferences preference = findThePreference(pref);
             UserPreferences userPreference = new UserPreferences();
-            userPreference.setUserId(user);
+            userPreference.setUserId(user.getId());
             userPreference.setPreferenceId(preference);
             userPreference.setResponse(pref.getResponse());
             userPreferences.add(userPreference);

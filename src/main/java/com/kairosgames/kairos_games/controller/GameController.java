@@ -60,6 +60,12 @@ public class GameController {
         List<Game> gameSimi = JaccardSimilarity.jaccardSimilarity(name, games);
          return ResponseEntity.ok(gameSimi);
     }
+
+    @GetMapping("/games/search/{name}")
+    public ResponseEntity<List<Game>> searchByName(@PathVariable String name) {
+        List<Game> games = this.service.filterByname(name);
+         return ResponseEntity.ok(games);
+    }
     
     
     @GetMapping("/games/trending")

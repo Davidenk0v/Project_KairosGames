@@ -2,14 +2,16 @@ package com.kairosgames.kairos_games.service.auth;
 
 import com.kairosgames.kairos_games.exceptions.EmailAlreadyExistException;
 import com.kairosgames.kairos_games.model.ERole;
+import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.RolEntity;
 import com.kairosgames.kairos_games.model.UserEntity;
+import com.kairosgames.kairos_games.model.UserPreferences;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.repository.RoleRepository;
+import com.kairosgames.kairos_games.repository.UserPreferenceRepository;
 import com.kairosgames.kairos_games.repository.UserRepository;
 
 import com.kairosgames.kairos_games.service.UserDetailsServiceImpl;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,10 +27,13 @@ import java.util.stream.Collectors;
 
 
 @Service
-public class AuthService implements IAuthService{
+public class AuthService implements IAuthService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private UserPreferenceRepository userPreferencesRepository;
 
     @Autowired
     private RoleRepository roleRepository;
@@ -41,7 +46,7 @@ public class AuthService implements IAuthService{
     //LOGIN
     @Override
     public ResponseEntity<?> login(LoginRequest request) throws Exception {
-        try{
+        try {
             Authentication authentication = userDetailsServices.authenticate(request.getUsername(), request.getPassword());
             String jwt = jwtService.generateJWT(authentication);
 
@@ -49,39 +54,46 @@ public class AuthService implements IAuthService{
             token.put("token", jwt);
 
             return new ResponseEntity<>(jwt, HttpStatus.OK);
-        }catch (Exception e){
-            System.out.println("Error:" + e);
+        } catch (Exception e) {
             return new ResponseEntity<>("Usuario o contraseña incorrecta", HttpStatus.BAD_REQUEST);
         }
     }
 
 
-    
     //REGISTER
-    public ResponseEntity<?> register(UserEntity request) throws Exception {
-        try{
-            Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
-            if(optional.isPresent()){
-                throw new UsernameNotFoundException("User already exists!");
-            }
-            if (userRepository.findByEmail(request.getEmail()).isPresent()) {
-                throw new EmailAlreadyExistException("Email already exists!");
-            }
-            List<String> rolesRequest = new ArrayList<>();
-            rolesRequest.add(ERole.USER.name());
-            Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
-            BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
-            UserEntity user = UserEntity.builder()
-                    .username(request.getUsername())
-                    .password(encoder.encode(request.getPassword()))
-                    .firstName(request.getFirstName())
-                    .lastName(request.getLastName())
-                    .email(request.getEmail())
-                    .edad(request.getEdad())
-                    .roles(roleEntityList)
-                    .build();
-            UserEntity userSaved = userRepository.save(user);
-            try {
+    public ResponseEntity<?> register(UserEntity request, Preferences preferences) throws Exception {
+            if (request != null) {
+                Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
+                if (optional.isPresent()) {
+                    throw new UsernameNotFoundException("User already exists!");
+                }
+                if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+                    throw new EmailAlreadyExistException("Email already exists!");
+                }
+                List<String> rolesRequest = new ArrayList<>();
+                rolesRequest.add(ERole.USER.name());
+                Set<RolEntity> roleEntityList = roleRepository.findRoleEntitiesByRolIn(rolesRequest).stream().collect(Collectors.toSet());
+                BCryptPasswordEncoder encoder = new BCryptPasswordEncoder(12);
+                UserEntity user = UserEntity.builder()
+                        .username(request.getUsername())
+                        .password(encoder.encode(request.getPassword()))
+                        .firstName(request.getFirstName())
+                        .lastName(request.getLastName())
+                        .email(request.getEmail())
+                        .edad(request.getEdad())
+                        .roles(roleEntityList)
+                        .build();
+                UserEntity userSaved = userRepository.save(user);
+
+                UserPreferences userPreferences = new UserPreferences()
+                .builder()
+                        .user_id(userSaved.getId())
+                        .preferences(preferences)
+                        .response("Si")
+                        .build();
+
+                        userPreferencesRepository.save(userPreferences);
+
 
                 ArrayList<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
@@ -96,12 +108,9 @@ public class AuthService implements IAuthService{
                 token.put("token", jwt);
 
                 return new ResponseEntity<>(token, HttpStatus.OK);
-
-            } catch (Exception e) {
-                throw new Exception(e.toString());
             }
-        }catch(Exception e){
-            throw new Exception(e.toString());
-        }
+
+        return new ResponseEntity<>("Error al crear usuario", HttpStatus.BAD_REQUEST);
     }
+
 }

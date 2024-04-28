@@ -1,5 +1,6 @@
 package com.kairosgames.kairos_games.controller;
 
+import com.kairosgames.kairos_games.model.Preferences;
 import com.kairosgames.kairos_games.model.UserEntity;
 import com.kairosgames.kairos_games.model.auth.LoginRequest;
 import com.kairosgames.kairos_games.service.auth.AuthService;
@@ -29,8 +30,8 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrer(@RequestBody UserEntity user) throws Exception {
-        return authService.register(user);
+    public ResponseEntity<?> registrer(@RequestBody UserEntity user,@RequestBody Preferences preferences) throws Exception {
+        return authService.register(user, preferences);
     }
 
 }

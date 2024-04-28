@@ -28,6 +28,7 @@ import java.security.spec.X509EncodedKeySpec;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -54,21 +55,28 @@ public class JwtService implements IJwtService{
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
-        UserEntity user = repository.findByUsername(username).get();
-        JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                .subject(username)
-                .claim("authorities", authorities)
-                .claim("id", user.getId())
-                .issueTime(now)
-                .expirationTime(new Date(now.getTime() + 14400000)) //Son 4 horas de expiración en milisegundos
-                .jwtID(UUID.randomUUID().toString())
-                .notBeforeTime(now)
-                .build();
 
-        SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
-        signedJWT.sign(signer);
+        Optional<UserEntity> optional = repository.findByUsername(username);
 
-        return signedJWT.serialize();
+        if(optional.isPresent()) {
+            UserEntity user = optional.get();
+            JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
+                    .subject(username)
+                    .claim("authorities", authorities)
+                    .claim("id", user.getId())
+                    .issueTime(now)
+                    .expirationTime(new Date(now.getTime() + 14400000)) //Son 4 horas de expiración en milisegundos
+                    .jwtID(UUID.randomUUID().toString())
+                    .notBeforeTime(now)
+                    .build();
+
+            SignedJWT signedJWT = new SignedJWT(new JWSHeader(JWSAlgorithm.RS256), claimsSet);
+            signedJWT.sign(signer);
+
+            return signedJWT.serialize();
+        }else{
+            return null;
+        }
     }
 
     @Override
@@ -108,7 +116,6 @@ public class JwtService implements IJwtService{
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
                 .replaceAll("\\s", "");
-        System.out.println(privateKeyPEM);
         byte[] decodedKey = Base64.getDecoder().decode(privateKeyPEM);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
 
