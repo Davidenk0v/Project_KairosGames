@@ -48,9 +48,9 @@ public class PreferencesController {
 
 
 
-    @PostMapping("/preferences/add/{user_id}")
-    public ResponseEntity<String> addPreferencesToUser(@PathVariable("user_id") Long userId, @RequestBody List<UserPreferenceRequest> preferences) {
-        userPreferenceService.saveAllPreferences(userId, preferences);
-        return ResponseEntity.ok("Añadidas todas las preferencias");
-    }
+    // @PostMapping("/preferences/add/{user_id}")
+    // public ResponseEntity<String> addPreferencesToUser(@PathVariable("user_id") Long userId, @RequestBody List<UserPreferenceRequest> preferences) {
+    //     userPreferenceService.saveAllPreferences(userId, preferences);
+    //     return ResponseEntity.ok("Añadidas todas las preferencias");
+    // }
 }

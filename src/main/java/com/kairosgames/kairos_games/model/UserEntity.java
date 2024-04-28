@@ -78,7 +78,7 @@ public class UserEntity implements UserDetails {
     @JoinTable(name = "user_game", 
     joinColumns = @JoinColumn(name = "user_id"),
     inverseJoinColumns = @JoinColumn(name = "game_id"))
-    private Set<Game> user_games;
+    private Set<Game> userGames;
 
    
     @Override

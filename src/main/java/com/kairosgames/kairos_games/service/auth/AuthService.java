@@ -68,7 +68,7 @@ public class AuthService implements IAuthService {
 
 
     //REGISTER
-    public ResponseEntity<?> register(UserRequestDto request) throws Exception {
+    public ResponseEntity<?> register(UserEntity request) throws Exception {
         try{
             Optional<UserEntity> optional = userRepository.findByUsername(request.getUsername());
             if(optional.isPresent()){
@@ -91,17 +91,6 @@ public class AuthService implements IAuthService {
                     .edad(request.getEdad())
                     .roles(roleEntityList)
                     .build();
-
-                    request.getPreferences().forEach(prefe -> {
-                        try {
-                            Preferences preference = new Preferences().builder()
-                                    .name(prefe)
-                                    .build();
-                                    user.getPreferences().add(preference);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    });
        
             UserEntity userSaved = userRepository.save(user);
 

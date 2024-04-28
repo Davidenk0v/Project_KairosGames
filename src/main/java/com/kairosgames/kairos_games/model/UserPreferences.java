@@ -17,7 +17,7 @@ public class UserPreferences {
 
     @ManyToOne
     @JoinColumn(name = "user_id")
-    private Long user_id;
+    private UserEntity user_id;
 
     @ManyToOne
     @JoinColumn(name = "preferences")
@@ -26,8 +26,8 @@ public class UserPreferences {
     @Column(name = "response")
     private String response;
 
-    public Long getUserId(){return this.user_id;}
-    public void setUserId(Long userId){this.user_id = userId;}
+    public Long getUserId(){return this.user_id.getId();}
+    public void setUserId(UserEntity userId){this.user_id = userId;}
     public Preferences getPreferenceId(){return this.preferences;}
     public void setPreferenceId(Preferences preferenceId){this.preferences = preferenceId;}
     public String getResponse(){return this.response;}

@@ -34,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> registrer(@RequestBody UserRequestDto user) throws Exception {
+    public ResponseEntity<?> registrer(@RequestBody UserEntity user) throws Exception {
         return authService.register(user);
     }
 }

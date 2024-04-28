@@ -47,7 +47,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
         try{
             Game game = this.gameRepository.findById(game_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
-            user.getUser_games().add(game);
+            user.getUserGames().add(game);
             userRepository.save(user);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when creating the relationship ");
@@ -63,7 +63,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
         try{
             Game game = this.gameRepository.findById(game_id).get();
             UserEntity user = this.userRepository.findById(user_id).get();
-            user.getUser_games().remove(game);
+            user.getUserGames().remove(game);
             this.userRepository.save(user);
         }catch(Exception e){
             throw new InternalServerErrorException("Error when removing the relationship ");
@@ -140,7 +140,7 @@ public class UserDetailsServiceImpl implements UserDetailService {
     public Set<Game> getUserGames(Long id){
         UserEntity user = this.userRepository.findById(id)
                 .orElseThrow(()-> new UsernameNotFoundException("El usuario con el id " + id + " no existe"));
-        return user.getUser_games();
+        return user.getUserGames();
     }
 
 
